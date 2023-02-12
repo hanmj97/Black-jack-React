@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/Black-jack-React/static/css/main.1031915d.css",
-    "main.js": "/Black-jack-React/static/js/main.817fc95a.js",
+    "main.css": "/Black-jack-React/static/css/main.a272f812.css",
+    "main.js": "/Black-jack-React/static/js/main.e1c28af4.js",
     "static/js/787.cacf667e.chunk.js": "/Black-jack-React/static/js/787.cacf667e.chunk.js",
     "static/media/Blackjack-hands-cards.png": "/Black-jack-React/static/media/Blackjack-hands-cards.2cd46900f0a155039264.png",
     "static/media/sub_visual01.jpg": "/Black-jack-React/static/media/sub_visual01.23538e02e6efbd6fe00b.jpg",
     "static/media/signin.jpg": "/Black-jack-React/static/media/signin.6e4b22e79aa68fb980ef.jpg",
     "static/media/blackjack-card.jpg": "/Black-jack-React/static/media/blackjack-card.5ecee52098c0c2028956.jpg",
     "index.html": "/Black-jack-React/index.html",
-    "main.1031915d.css.map": "/Black-jack-React/static/css/main.1031915d.css.map",
-    "main.817fc95a.js.map": "/Black-jack-React/static/js/main.817fc95a.js.map",
+    "main.a272f812.css.map": "/Black-jack-React/static/css/main.a272f812.css.map",
+    "main.e1c28af4.js.map": "/Black-jack-React/static/js/main.e1c28af4.js.map",
     "787.cacf667e.chunk.js.map": "/Black-jack-React/static/js/787.cacf667e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.1031915d.css",
-    "static/js/main.817fc95a.js"
+    "static/css/main.a272f812.css",
+    "static/js/main.e1c28af4.js"
   ]
 }
