@@ -41,9 +41,21 @@ const Game = () => {
     const urlmove = useNavigate();
     const battingmoney = 0;
 
+    let [fade, setFade] = useState('')
+
+    useEffect(()=>{
+        // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
+        const fadeTimer = setTimeout(()=>{ setFade('end') }, 100)
+        return ()=>{
+            // 기존 fadeTimer 제거 후 class 빈 값으로 변경
+            clearTimeout(fadeTimer);
+  	        setFade('')
+        }
+    }, [])
+
     return (
         <div>
-            <div className="tablediv">
+            <div className={"tablediv start " + fade}>
                 <img src={gametable} className='gametable' alt='gametable' />
 
                 <div className="delercard1">

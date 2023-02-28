@@ -146,9 +146,21 @@ const Container = () => {
         });
     }
 
+    let [fade, setFade] = useState('')
+
+    useEffect(()=>{
+        // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
+        const fadeTimer = setTimeout(()=>{ setFade('end') }, 100)
+        return ()=>{
+            // 기존 fadeTimer 제거 후 class 빈 값으로 변경
+            clearTimeout(fadeTimer);
+  	        setFade('')
+        }
+    }, [])
+
 
     return (
-        <div className="signin_body">
+        <div className={"signin_body start " + fade}>
         <div className={`container ${formClass}`}>
             <div className="container__form container--signup">
                 <form action="#" className="form" id="form1" onSubmit={(e) => {

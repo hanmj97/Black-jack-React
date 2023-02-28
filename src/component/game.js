@@ -66,7 +66,7 @@ const Game = () => {
                     {
                         left.map((css, index) => {
                             return (
-                                <div className="usercard1" style={{left : left[index]}}>
+                                <div key={index} className="usercard1" style={{left : left[index]}}>
                                     <img src={testcard} className="testcard"/>
                                 </div>
                             )

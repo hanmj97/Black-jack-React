@@ -12,8 +12,12 @@ const Container = () => {
     const pwRef = useRef();
     const urlmove = useNavigate();
 
+    useEffect(()=>{
+        setFormClass("right-panel-active");
+    });
+
     const click_signInBtn = () => {
-      setFormClass("");
+        setFormClass("");
     };
       
     const click_signUpBtn = () => {
@@ -128,7 +132,9 @@ const Container = () => {
                     icon: 'success',
                     title: '정상적으로 로그인 되었습니다.',
                 }).then(function(){
-                    sessionStorage.setItem("id", idRef.current.value);
+                    sessionStorage.setItem("id", loginidRef.current.value);
+                    sessionStorage.setItem("name", res.data.username);
+                    sessionStorage.setItem("chip", res.data.usermoney);
                     window.location.replace("/");
                 });
 
@@ -144,9 +150,21 @@ const Container = () => {
         });
     }
 
+    let [fade, setFade] = useState('')
+
+    useEffect(()=>{
+        // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
+        const fadeTimer = setTimeout(()=>{ setFade('end') }, 100)
+        return ()=>{
+            // 기존 fadeTimer 제거 후 class 빈 값으로 변경
+            clearTimeout(fadeTimer);
+  	        setFade('')
+        }
+    }, [])
+
 
     return (
-        <div className="signin_body">
+        <div className={"signin_body start " + fade}>
         <div className={`container ${formClass}`}>
             <div className="container__form container--signup">
                 <form action="#" className="form" id="form1" onSubmit={(e) => {
@@ -161,7 +179,9 @@ const Container = () => {
             </div>
 
             <div className="container__form container--signin">
-                <form action="#" className="form" id="form2" onSubmit={(e) => e.preventDefault()}>
+                <form action="#" className="form" id="form2" onSubmit={(e) => {
+                    e.preventDefault();
+                }}>
                     <h2 className="form__title">Sign In</h2>
                     <input type="text" placeholder="ID" className="input" ref={loginidRef}/>
                     <input type="password" placeholder="Password" className="input" ref={loginpwRef}/>
