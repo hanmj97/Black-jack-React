@@ -83,7 +83,7 @@ const Game = () => {
     };
 
 
-    randomcard();
+    //randomcard();
 
     return (
         <div className={"start " + fade}>
