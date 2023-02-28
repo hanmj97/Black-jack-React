@@ -298,7 +298,7 @@ margin-bottom: 20px;
   width: 15%;
   z-index: 100;
   left: 10%;
-  top: 40%;
+  top: 35%;
 }
 
 .betbtn2 {
@@ -306,7 +306,7 @@ margin-bottom: 20px;
   width: 15%;
   z-index: 100;
   left: 10%;
-  top: 62%;
+  top: 56%;
 }
 
 .chip1 {
@@ -477,6 +477,14 @@ margin-bottom: 20px;
 
 .gbtn.doubledown:hover {
   background-color: #699DD1;
+}
+
+.gbtn.betreset {
+  margin: 10% 10% 10%;
+}
+
+.gbtn.betallin {
+  margin: 10% 10% 10%;
 }
 
 .gbtn.finbats {
