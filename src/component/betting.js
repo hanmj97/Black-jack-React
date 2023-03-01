@@ -7,10 +7,16 @@ import chip5 from "../chipimg/5_red_chip.png";
 import chip10 from "../chipimg/10_blue_chip.png";
 import chip25 from "../chipimg/25_green_chip.png";
 import chip100 from "../chipimg/100_black_chip.png";
+import soundicon from "../headerimg/soundicon.png";
 import React, { useEffect, useRef, useState } from 'react';
 import Axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
+import backgroundsound from '../soundeffect/backgroundsound.mp3';
+import chipsound from '../soundeffect/chipsound.mp3';
+import useSound from 'use-sound';
+import AudioPlayer from 'react-h5-audio-player';
+
 
 let userid = "";
 let usermoney = 0;
@@ -37,8 +43,6 @@ setInterval(() => {
     }).catch((e) => {
         console.error(e);
     });
-
-    //console.log("돈 : " + usermoney);
 }, 5000);
 
 
@@ -46,24 +50,68 @@ setInterval(() => {
 const Game = () => {  
     const urlmove = useNavigate();
     const battingmoney = 0;
-
     let [fade, setFade] = useState('');
+    var chipaudio = new Audio(chipsound);
+    /* const audio = new Audio(backgroundsound);
+    let playstatus = false;
+    const [isPlaying, setIsPlaying] = React.useState(false); */
 
-    useEffect(()=>{
+
+    /* const playbacksound = () => {
+        if(playstatus) {
+            playstatus = false;
+
+            audio.pause();        // mp3 재생
+        }else {
+            playstatus = true;
+
+            audio.loop = true;   // 반복재생하지 않음
+            audio.volume = 0.2;  // 음량 설정
+            audio.muted = true;
+            audio.play();        // mp3 재생
+            audio.muted = false;
+        }
+    } 
+
+    const [play, {pause}] = useSound(backgroundsound, {
+        volume: 0.2,
+        onplay: () => setIsPlaying(true),
+        onend: () => setIsPlaying(false),
+    });
+
+    const togglePlay = () => {
+        if (isPlaying) {
+            pause();
+        } else {
+            play();
+        }
+        setIsPlaying(!isPlaying);
+    }
+    */
+
+    useEffect(() => {
         // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
         const fadeTimer = setTimeout(()=>{ setFade('end') }, 100)
-        return ()=>{
+        return () => {
             // 기존 fadeTimer 제거 후 class 빈 값으로 변경
             clearTimeout(fadeTimer);
-  	        setFade('')
+  	        setFade('');
         }
     }, []);
+
 
     return (
         <div>
             <div className={"tablediv start " + fade}>
                 <img src={gametable} className='gametable' alt='gametable' />
 
+
+                <div className="backsoundbar">
+                    <AudioPlayer autoPlay src={backgroundsound} onPlay={e => console.log("onPlay")} loop={true} volume={0.1}
+                        // other props here
+                    />
+                </div>
+    
                 <div className="delercard1">
                     <img src={nocard} className="testcard"/>
                 </div>
@@ -102,12 +150,16 @@ const Game = () => {
                     <button className="gbtn betallin" onClick={() => {
                             const resultElement = document.getElementById('bettingmoney');
                             
+                            chipaudio.play();
+                            
                             resultElement.value = usermoney;
                         }}>All In</button>
                     </div>
                     <img src={chip5} className="chip5"     onClick={() => {
                         const perfectElement = document.getElementById('perfectbetmoney');
                         const resultElement = document.getElementById('bettingmoney');
+
+                        chipaudio.play();
 
                         if(Number(perfectElement.value) + Number(resultElement.value) + 5 <= usermoney){
                             resultElement.value = Number(resultElement.value) + 5;
@@ -117,6 +169,8 @@ const Game = () => {
                         const perfectElement = document.getElementById('perfectbetmoney');
                         const resultElement = document.getElementById('bettingmoney');
 
+                        chipaudio.play();
+
                         if(Number(perfectElement.value) + Number(resultElement.value) + 10 <= usermoney){
                             resultElement.value = Number(resultElement.value) + 10;
                         }
@@ -125,6 +179,8 @@ const Game = () => {
                         const perfectElement = document.getElementById('perfectbetmoney');
                         const resultElement = document.getElementById('bettingmoney');
 
+                        chipaudio.play();
+
                         if(Number(perfectElement.value) + Number(resultElement.value) + 25 <= usermoney){
                             resultElement.value = Number(resultElement.value) + 25;
                         }
@@ -132,6 +188,8 @@ const Game = () => {
                     <img src={chip100} className="chip100" onClick={() => {
                         const perfectElement = document.getElementById('perfectbetmoney');
                         const resultElement = document.getElementById('bettingmoney');
+
+                        chipaudio.play();
 
                         if(Number(perfectElement.value) + Number(resultElement.value) + 100 <= usermoney){
                             resultElement.value = Number(resultElement.value) + 100;
