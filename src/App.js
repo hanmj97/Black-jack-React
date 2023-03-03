@@ -40,9 +40,9 @@ const loginOk = (fade) => {
     <div className={"App start " + fade}>
       <BrowserRouter>
 
-        <Mobile>
+        {/* <Mobile>                //모바일 버젼은 추후 개발
           모바일로 접속함
-        </Mobile>
+        </Mobile> */}
 
         <PC>
           <Loginnavbar></Loginnavbar>
@@ -68,9 +68,9 @@ const loginNo = (fade) => {
     <div className={"App start " + fade}>
       <BrowserRouter>
 
-        <Mobile>
+        {/* <Mobile>              //모바일 버젼은 추후 개발
           모바일로 접속함
-        </Mobile>
+        </Mobile> */}
 
         <PC>
           <Navbar></Navbar>
