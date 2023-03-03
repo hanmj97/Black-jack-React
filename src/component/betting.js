@@ -257,13 +257,24 @@ const Game = () => {
                                 }else {
                                     const perfectElement = document.getElementById('perfectbetmoney');
                                     const resultElement = document.getElementById('bettingmoney');
-
-                                    urlmove('/Game', {
-                                        state: {
-                                            userid: userid,
-                                            perfectbetsmoney: Number(perfectElement.value), 
-                                            betsmoney: Number(resultElement.value), 
-                                            resultmoney: Number(usermoney) - (Number(resultElement.value) + Number(perfectElement.value)),
+                                    
+                                    const Toast = Swal.mixin({
+                                        width: 900,
+                                    });
+                            
+                                    Toast.fire({
+                                        icon: 'info',
+                                        title: '게임시작 후 새로고침이나 뒤로가기 시 게임이 중단됩니다.',
+                                    }).then(result => {
+                                        if (result.isConfirmed) {
+                                            urlmove('/Game', {
+                                                state: {
+                                                    userid: userid,
+                                                    perfectbetsmoney: Number(perfectElement.value), 
+                                                    betsmoney: Number(resultElement.value), 
+                                                    resultmoney: Number(usermoney) - (Number(resultElement.value) + Number(perfectElement.value)),
+                                                }
+                                            });
                                         }
                                     });
                                 }

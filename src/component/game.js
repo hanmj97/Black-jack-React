@@ -32,7 +32,7 @@ const Game = () => {
 
         Toast.fire({
             icon: 'error',
-            title: '새로고침 시 메인으로 돌아갑니다.',
+            title: '메인으로 돌아갑니다.',
         }).then(result => {
             if (result.isConfirmed) {
               urlmove('/');
