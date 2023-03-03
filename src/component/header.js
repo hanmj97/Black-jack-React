@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 
 export default function Header(props) {
+    console.log(sessionStorage.length);
     return (
         <>
         <div className="wrapper01"></div>
@@ -45,7 +46,7 @@ export default function Header(props) {
                 <div className="gamebutton-area">
                     <button className="gamebtn">
                         {   
-                            sessionStorage.length === 0 ? 
+                            sessionStorage.length === 2 ? 
                             <Link to="/Signin"><span style={{color: "white"}}>Blackjack - Game Start !!</span></Link> : 
                             <Link to="/Betting"><span style={{color: "white"}}>Blackjack - Game Start !!</span></Link>
                         }

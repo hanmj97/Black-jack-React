@@ -471,7 +471,6 @@ margin-bottom: 20px;
   z-index: 100;
   left: 50%;
   top: 8%;
-  border: 1px solid black;
 }
 
 .usercard1 {
@@ -479,7 +478,7 @@ margin-bottom: 20px;
   width: 7%;
   z-index: 100;
   left: 42%;
-  top: 75%;
+  top: 70%;
 }
 
 .usercard2 {
@@ -488,7 +487,6 @@ margin-bottom: 20px;
   z-index: 100;
   left: 50%;
   top: 70%;
-  border: 1px solid black;
 }
 
 .testcard {
