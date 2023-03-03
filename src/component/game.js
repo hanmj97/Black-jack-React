@@ -1,26 +1,31 @@
 import gametable from "../headerimg/gametable.jpg";
-import testcard from "../cardimg/1_ace_of_clubs.png";
-import testcard2 from "../cardimg/10_king_of_hearts.png";
 import nocard from "../cardimg/cardback.png";
+import cardstack from "../cardimg/card_stack.png";
 import React, { useEffect, useRef, useState } from 'react';
-import { useSpring, animated } from "react-spring";
 import Axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useBeforeunload } from "react-beforeunload";
 import { createBrowserHistory } from 'history';
+
 
 const Game = () => {  
     const urlmove = useNavigate();
     const location = useLocation();
-    const left = ["31%", "34%", "37%", "40%", "43%", "46%", "49%"];
+    const left = ["28%", "31%", "34%", "37%", "40%", "43%", "46%", "49%"];
     const [usercard_array,setUsercard_array] = useState([]);
     const [dealercard_array,setDealercard_array] = useState([]);
     let usermoney = 0;
     let [fade, setFade] = useState('');
-    const [isFlipped, setIsFlipped] = useState(false);      // 카드 뒤집기
+    const [isFlipped, setIsFlipped] = useState(false);                  //카드 플립
+    const [isSlide, setIsSlide] = useState(false);                      //카드 슬라이드
+
+    const handleHit = () => {
+        setIsSlide(!isSlide);
+    };
+
 
     console.log(location.state);
+
     if(location.state != null){
         usermoney = location.state.resultmoney;
     }else {
@@ -115,8 +120,6 @@ const Game = () => {
       setIsFlipped(!isFlipped);             //카드 뒤집는 코드
     };
 
-
-
     const history = createBrowserHistory();                     // 1. history라는 상수에 createBrowerHistory 함수를 할당한다.
       
     const preventGoBack = () => {                               // 2. 뒤로가기 막는 함수 설정
@@ -150,8 +153,7 @@ const Game = () => {
     useEffect(() => {
         history.push(null, '', history.location.href);                      // 4-1. 현재 상태를 세션 히스토리 스택에 추가(push)한다.
     }, [history.location]);                                                 // 4. history.location (pathname)이 변경될때마다
-
-
+    
 
 
     /* const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
@@ -181,11 +183,13 @@ const Game = () => {
                 <div>
                     {
                         dealercard_array.map((card, index) => {
-                            let url = dealercard_array[index].cardimg;                            
+                            let url = dealercard_array[index].cardimg;
 
                             if(index == 0){
                                 return (
-                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''}`} style={{left : left[index]}} onClick={handleFlip}>
+                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''} ${isSlide ? 'slide-dealer' : ''}`} style={{
+                                            left : left[index],
+                                        }} onClick={handleFlip}>
                                         <div className="flipper">
                                             <div className="back">
                                                 <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
@@ -198,7 +202,9 @@ const Game = () => {
                                 );
                             }else {
                                 return (
-                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''}`} style={{left : left[index]}} onClick={handleFlip}>
+                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''} ${isSlide ? 'slide-dealer' : ''}`} style={{
+                                            left : left[index],
+                                        }} onClick={handleFlip}>
                                         <div className="flipper">
                                             <div className="front">
                                                 <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
@@ -219,7 +225,7 @@ const Game = () => {
                         usercard_array.map((card, index) => {
                             const url = usercard_array[index].cardimg;
                             return (
-                                <div key={index} className="usercard1" style={{left : left[index]}}>
+                                <div key={index} className={`cardstack ${isSlide ? 'slide-player' : ''}`}>
                                     <img src={process.env.PUBLIC_URL + url} className="testcard"/>
                                 </div>
                             )
@@ -227,9 +233,12 @@ const Game = () => {
                     }
                 </div>
 
+                <div className="cardstack">
+                    <img src={cardstack} className="cardstack_img"></img>
+                </div>
 
                 <div className="gamebutton">
-                    <button className="gbtn hit"  onClick={(e) =>  e.preventDefault()}>Hit</button>
+                    <button className="gbtn hit"  onClick={handleHit}>Hit</button>
                     <button className="gbtn stay" onClick={(e) =>  e.preventDefault()}>Stay</button>
                     <button className="gbtn doubledown" onClick={(e) =>  e.preventDefault()}>Double Down</button>
                 </div>

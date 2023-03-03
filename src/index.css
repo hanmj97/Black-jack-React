@@ -504,6 +504,32 @@ margin-bottom: 20px;
   object-fit: contain;
 }
 
+.cardstack {
+  position: absolute;
+  width: 15%;
+  left: 65%;
+  top: 35%;
+  z-index: 100;
+}
+
+.cardstack_img {
+  width: 100%;
+  height: 100%;
+  max-width : 150px;
+  object-fit: contain;
+}
+
+.slide-player {
+  transform: translateX(-200%) translateY(-200%);
+  transition: transform 0.9s;
+}
+
+.slide-dealer {
+  transform: translateX(200%) translateY(200%);
+  transition: transform 0.9s;
+}
+
+
 .start {
   opacity : 0
 }
