@@ -157,7 +157,7 @@ const Game = () => {
             icon: "error",
             title: "새로고침 혹은 뒤로가기가 감지되어 메인으로 돌아갑니다.",
         }).then(function(){
-            sessionStorage.clear();
+            //sessionStorage.clear();
             window.location.replace('/');
         });
     };
