@@ -259,12 +259,12 @@ const Game = () => {
                                     const resultElement = document.getElementById('bettingmoney');
                                     
                                     const Toast = Swal.mixin({
-                                        width: 900,
+                                        width: 1000,
                                     });
                             
                                     Toast.fire({
                                         icon: 'info',
-                                        title: '게임시작 후 새로고침이나 뒤로가기 시 게임이 중단됩니다.',
+                                        title: '게임을 시작하시겠습니까? <br/> (게임시작 후 새로고침이나 뒤로가기 시 게임이 중단됩니다.)',
                                     }).then(result => {
                                         if (result.isConfirmed) {
                                             urlmove('/Game', {

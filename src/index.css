@@ -423,10 +423,11 @@ margin-bottom: 20px;
 .flip-container {
   position: absolute;
   width: 7%;
-  height: 20%;
+  height: 23%;
   z-index: 100;
   left: 42%;
   top: 8%;
+  object-fit: contain;
 }
 
 .flip-container.flip .flipper {
@@ -435,8 +436,8 @@ margin-bottom: 20px;
 
 .flipper {
   position: absolute;
-  width: 97%;
-  height: 101%;
+  width: 100%;
+  height: 100%;
   transform-style: preserve-3d;
   transition: 0.6s;
   z-index: 100;
@@ -493,14 +494,14 @@ margin-bottom: 20px;
   width: 100%;
   height: 100%;
   max-width : 150px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .testcard2 {
   width: 100%;
   height: 100%;
   max-width : 150px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .start {

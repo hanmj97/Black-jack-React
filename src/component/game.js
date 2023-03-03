@@ -26,7 +26,7 @@ const Game = () => {
     }else {
         usermoney = 0;
 
-        const Toast = Swal.mixin({
+        /* const Toast = Swal.mixin({
             width: 600,
         });
 
@@ -37,14 +37,14 @@ const Game = () => {
             if (result.isConfirmed) {
               urlmove('/');
             }
-        });
+        }); */
     }
 
     const randomcard = () => {
         Axios.post("http://localhost:8000/randomcard", {
-            userid: location.state.userid,
-            perfectbetsmoney: location.state.perfectbetsmoney,
-            betsmoney: location.state.betsmoney,
+            userid: "hanmj97",
+            perfectbetsmoney: 0,
+            betsmoney: 10,
         }).then((res) => {
             console.log(res.data);
             if(res.data.length == 4){
@@ -106,9 +106,9 @@ const Game = () => {
     }, []);
 
     useEffect(() => {
-        if(location.state != null){
+        //if(location.state != null){
             randomcard();
-        }
+        //}
     }, []);
 
     const handleFlip = () => {
@@ -154,7 +154,7 @@ const Game = () => {
 
 
 
-    const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
+    /* const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
         e.preventDefault();                                // 특정 이벤트에 대한 사용자 에이전트 (브라우저)의 기본 동작이 실행되지 않도록 막는다.
         e.returnValue = ''; 
         // e.preventDefault를 통해서 방지된 이벤트가 제대로 막혔는지 확인할 때 사용한다고 한다.
@@ -171,7 +171,7 @@ const Game = () => {
         return () => {
             window.removeEventListener('beforeunload', preventClose);   // 5. 해당 이벤트 실행 후, beforeunload를 감지하는 것을 제거한다.
         };
-    });
+    }); */
 
 
     return (
@@ -234,7 +234,7 @@ const Game = () => {
                     <button className="gbtn doubledown" onClick={(e) =>  e.preventDefault()}>Double Down</button>
                 </div>
 
-                <div className="usermoney">bankroll : {usermoney}</div>
+                {/* <div className="usermoney">bankroll : {usermoney}</div> */}
             </div>
         </div>
     );
