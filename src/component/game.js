@@ -54,16 +54,15 @@ const Game = () => {
         usermoney = 0;
 
         const Toast = Swal.mixin({
-            width: 600,
-        });
-
+            width: 900,
+        })
+        
         Toast.fire({
-            icon: 'error',
-            title: '메인으로 돌아갑니다.',
-        }).then(result => {
-            if (result.isConfirmed) {
-              urlmove('/');
-            }
+            icon: "error",
+            title: "새로고침 혹은 뒤로가기가 감지되어 메인으로 돌아갑니다.",
+        }).then(function(){
+            //sessionStorage.clear();
+            window.location.replace('/');
         });
     }
 
@@ -151,16 +150,15 @@ const Game = () => {
     const preventGoBack = () => {                               // 2. 뒤로가기 막는 함수 설정
         history.push(null, '', history.location.href);          // 2-1. 현재 상태를 세션 히스토리 스택에 추가(push)한다.
         const Toast = Swal.mixin({
-            width: 600,
+            width: 700,
         });
 
         Toast.fire({
-            icon: 'error',
-            title: '뒤로가기 시 메인으로 돌아갑니다.',
-        }).then(result => {
-            if (result.isConfirmed) {
-              urlmove('/');
-            }
+            icon: "error",
+            title: "새로고침 혹은 뒤로가기가 감지되어 메인으로 돌아갑니다.",
+        }).then(function(){
+            sessionStorage.clear();
+            window.location.replace('/');
         });
     };
 
@@ -182,7 +180,7 @@ const Game = () => {
     
 
 
-    const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
+    /* const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
         e.preventDefault();                                // 특정 이벤트에 대한 사용자 에이전트 (브라우저)의 기본 동작이 실행되지 않도록 막는다.
         e.returnValue = ''; 
         // e.preventDefault를 통해서 방지된 이벤트가 제대로 막혔는지 확인할 때 사용한다고 한다.
@@ -199,7 +197,7 @@ const Game = () => {
         return () => {
             window.removeEventListener('beforeunload', preventClose);   // 5. 해당 이벤트 실행 후, beforeunload를 감지하는 것을 제거한다.
         };
-    });
+    }); */
 
 
     return (
