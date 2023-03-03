@@ -216,10 +216,11 @@ const Game = () => {
                     <button className="gbtn finbats" onClick={(e) =>  {
                         e.preventDefault();
 
+                        const perfectElement = document.getElementById('perfectbetmoney');
                         const resultElement = document.getElementById('bettingmoney');
 
                         Axios.post("http://localhost:8000/betting", {
-                            betsmoney : resultElement.value,
+                            betsmoney : Number(resultElement.value) + Number(perfectElement.value),
                             id : sessionStorage.getItem("id"),
                         }).then((res) => {
                             if(res.data.betting === "finish"){
@@ -254,12 +255,15 @@ const Game = () => {
                                         title: '베팅한 금액이 최소 베팅금액보다 적습니다.',
                                     });
                                 }else {
+                                    const perfectElement = document.getElementById('perfectbetmoney');
                                     const resultElement = document.getElementById('bettingmoney');
 
                                     urlmove('/Game', {
                                         state: {
                                             userid: userid,
+                                            perfectbetsmoney: Number(perfectElement.value), 
                                             betsmoney: Number(resultElement.value), 
+                                            resultmoney: Number(usermoney) - (Number(resultElement.value) + Number(perfectElement.value)),
                                         }
                                     });
                                 }

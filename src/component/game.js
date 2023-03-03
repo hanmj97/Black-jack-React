@@ -11,50 +11,69 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const Game = () => {  
     const urlmove = useNavigate();
     const location = useLocation();
-    const left = ["40%", "43%", "46%"];
+    const left = ["31%", "34%", "37%", "40%", "43%", "46%", "49%"];
+    const [usercard_array,setUsercard_array] = useState([]);
+    const [dealercard_array,setDealercard_array] = useState([]);
     let usermoney = 0;
+    let [fade, setFade] = useState('');
+    const [isFlipped, setIsFlipped] = useState(false);      // 카드 뒤집기
 
     console.log(location.state);
 
     const randomcard = () => {
         Axios.post("http://localhost:8000/randomcard", {
             userid: location.state.userid,
+            perfectbetsmoney: location.state.perfectbetsmoney,
             betsmoney: location.state.betsmoney,
         }).then((res) => {
-            if (res.data.affectedRows === 1){
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'center-center',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    width: 500,
-                    didOpen: (toast) => {
-                      toast.addEventListener('mouseenter', Swal.stopTimer)
-                      toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
-
-                Toast.fire({
-                    icon: 'success',
-                    title: '아이디가 정상적으로 생성되었습니다. <br/> 생성된 아이디로 로그인해주세요.',
-                }).then(function(){
-                    urlmove('/');
-                });
-                
-            }else {
-                Swal.fire({
-                    icon: "warning",
-                    title: "아이디 중복",
-                    text: "이미 존재하는 아이디입니다.",
-                });
+            console.log(res.data);
+            if(res.data.length == 4){
+                usercard_array.push(res.data[0]);
+                usercard_array.push(res.data[2]);
+                dealercard_array.push(res.data[1]);
+                dealercard_array.push(res.data[3]);
             }
         }).catch((e) => {
             console.error(e);
         });
     }
 
-    let [fade, setFade] = useState('');
+    const hit = () => {
+        Axios.post("http://localhost:8000/hit", {
+            userid: location.state.userid,
+            perfectbetsmoney: location.state.perfectbetsmoney,
+            betsmoney: location.state.betsmoney,
+        }).then((res) => {
+            console.log(res.data);
+            if(res.data.length == 4){
+                usercard_array.push(res.data[0]);
+                usercard_array.push(res.data[2]);
+                dealercard_array.push(res.data[1]);
+                dealercard_array.push(res.data[3]);
+            }
+        }).catch((e) => {
+            console.error(e);
+        });
+    }
+
+    const stay = () => {
+        Axios.post("http://localhost:8000/stay", {
+            userid: location.state.userid,
+            perfectbetsmoney: location.state.perfectbetsmoney,
+            betsmoney: location.state.betsmoney,
+        }).then((res) => {
+            console.log(res.data);
+            if(res.data.length == 4){
+                usercard_array.push(res.data[0]);
+                usercard_array.push(res.data[2]);
+                dealercard_array.push(res.data[1]);
+                dealercard_array.push(res.data[3]);
+            }
+        }).catch((e) => {
+            console.error(e);
+        });
+    }
+
 
     useEffect(()=>{
         // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
@@ -66,63 +85,61 @@ const Game = () => {
         }
     }, []);
 
-    /*
-    const [flipped, setFlipped] = useState(false);
-
-    const { transform, opacity } = useSpring({
-        opacity: flipped ? 1 : 0,
-        transform: `perspective(600px) rotateY(${flipped ? 180 : 0}deg)`,
-        config: { mass: 5, tension: 500, friction: 80 }
-    });
-    */
-
-    const [isFlipped, setIsFlipped] = useState(false);
+    useEffect(() => {
+        randomcard();
+    }, []);
 
     const handleFlip = () => {
-      setIsFlipped(!isFlipped);
+      setIsFlipped(!isFlipped);             //카드 뒤집는 코드
     };
-
-
-    //randomcard();
 
     return (
         <div className={"start " + fade}>
             <div className="tablediv">
                 <img src={gametable} className='gametable' alt='gametable' />
-
-                <div className={`flip-container ${isFlipped ? 'flip' : ''}`} onClick={handleFlip}>
-                    <div className="flipper">
-                        <div className="front">
-                            <img src={testcard} alt="Front" style={{
-                                width: "10%",
-                                height: "20%",
-                            }}/>
-                        </div>
-                        <div className="back">
-                            <img src={nocard} alt="Back" style={{
-                                width: "10%",
-                                height: "20%",
-                            }}/>
-                        </div>
-                    </div>
-                </div>
-                
-                {/* 
-                <div className="delercard1" onClick={() => setFlipped(!flipped)}>
-                    <animated.img src={testcard} className="testcard" style={{ opacity: opacity.interpolate(o => 1 - o), transform }}/>
-                    <animated.img src={nocard} className="testcard" style={{
-                        opacity,
-                        transform: transform.interpolate(t => `${t} rotateX(180deg)`)
-                    }}/>
-                </div>
-                 */}
-
-                <div >
+                <div>
                     {
-                        left.map((css, index) => {
+                        dealercard_array.map((card, index) => {
+                            let url = dealercard_array[index].cardimg;                            
+
+                            if(index == 0){
+                                return (
+                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''}`} style={{left : left[index]}} onClick={handleFlip}>
+                                        <div className="flipper">
+                                            <div className="back">
+                                                <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
+                                            </div>
+                                            <div className="front">
+                                                <img src={nocard} alt="Back" className="testcard"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }else {
+                                return (
+                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''}`} style={{left : left[index]}} onClick={handleFlip}>
+                                        <div className="flipper">
+                                            <div className="front">
+                                                <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
+                                            </div>
+                                            <div className="back">
+                                                <img src={nocard} alt="Back" className="testcard"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }
+                        })
+                    }
+                </div>
+
+                <div>
+                    {
+                        usercard_array.map((card, index) => {
+                            const url = usercard_array[index].cardimg;
                             return (
                                 <div key={index} className="usercard1" style={{left : left[index]}}>
-                                    <img src={testcard} className="testcard"/>
+                                    <img src={process.env.PUBLIC_URL + url} className="testcard"/>
                                 </div>
                             )
                         })
@@ -136,10 +153,15 @@ const Game = () => {
                     <button className="gbtn doubledown" onClick={(e) =>  e.preventDefault()}>Double Down</button>
                 </div>
 
-                <div className="usermoney">bankroll : {usermoney}</div>
+                <div className="usermoney">bankroll : {location.state.resultmoney}</div>
             </div>
         </div>
     );
+
+
+    const gamepage = () => {
+        
+    }
 }
 
 export default Game;
