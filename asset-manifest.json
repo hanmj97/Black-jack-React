@@ -1,28 +1,34 @@
 {
   "files": {
-    "main.css": "/Black-jack-React/static/css/main.3ea4c809.css",
-    "main.js": "/Black-jack-React/static/js/main.300ac568.js",
+    "main.css": "/Black-jack-React/static/css/main.3d14bba7.css",
+    "main.js": "/Black-jack-React/static/js/main.a5de9da3.js",
+    "static/js/845.5c46ef26.chunk.js": "/Black-jack-React/static/js/845.5c46ef26.chunk.js",
     "static/js/787.cacf667e.chunk.js": "/Black-jack-React/static/js/787.cacf667e.chunk.js",
+    "static/media/backgroundsound.mp3": "/Black-jack-React/static/media/backgroundsound.d2ee92666b84d85c9859.mp3",
     "static/media/gametable.jpg": "/Black-jack-React/static/media/gametable.e1395bdcef99e34420f9.jpg",
     "static/media/Blackjack-hands-cards.png": "/Black-jack-React/static/media/Blackjack-hands-cards.2cd46900f0a155039264.png",
     "static/media/sub_visual01.jpg": "/Black-jack-React/static/media/sub_visual01.23538e02e6efbd6fe00b.jpg",
     "static/media/signin.jpg": "/Black-jack-React/static/media/signin.6e4b22e79aa68fb980ef.jpg",
     "static/media/10_king_of_hearts.png": "/Black-jack-React/static/media/10_king_of_hearts.67c7a87603fdc5b5e2f7.png",
-    "static/media/cardback.jpg": "/Black-jack-React/static/media/cardback.d04378aa5effd4bd578b.jpg",
+    "static/media/cardback.png": "/Black-jack-React/static/media/cardback.8870770baf431e296924.png",
     "static/media/100_black_chip.png": "/Black-jack-React/static/media/100_black_chip.401563a1829edc9aa3f6.png",
     "static/media/25_green_chip.png": "/Black-jack-React/static/media/25_green_chip.5b6724c01298a1ccc728.png",
     "static/media/10_blue_chip.png": "/Black-jack-React/static/media/10_blue_chip.0aa22ba70efb82631484.png",
     "static/media/5_red_chip.png": "/Black-jack-React/static/media/5_red_chip.c2f02802e5f76067636c.png",
     "static/media/blackjack-card.jpg": "/Black-jack-React/static/media/blackjack-card.5ecee52098c0c2028956.jpg",
     "static/media/1_white_chip.png": "/Black-jack-React/static/media/1_white_chip.0324d187c29eb17cc7c7.png",
+    "static/media/card_stack.png": "/Black-jack-React/static/media/card_stack.9a1403180f1c71da0b02.png",
+    "static/media/logo2.png": "/Black-jack-React/static/media/logo2.ad7a75f282268c681696.png",
     "static/media/1_ace_of_clubs.png": "/Black-jack-React/static/media/1_ace_of_clubs.f2dd09c014f9a968db89.png",
+    "static/media/chipsound.mp3": "/Black-jack-React/static/media/chipsound.0fa341aecfb7bb9d095e.mp3",
     "index.html": "/Black-jack-React/index.html",
-    "main.3ea4c809.css.map": "/Black-jack-React/static/css/main.3ea4c809.css.map",
-    "main.300ac568.js.map": "/Black-jack-React/static/js/main.300ac568.js.map",
+    "main.3d14bba7.css.map": "/Black-jack-React/static/css/main.3d14bba7.css.map",
+    "main.a5de9da3.js.map": "/Black-jack-React/static/js/main.a5de9da3.js.map",
+    "845.5c46ef26.chunk.js.map": "/Black-jack-React/static/js/845.5c46ef26.chunk.js.map",
     "787.cacf667e.chunk.js.map": "/Black-jack-React/static/js/787.cacf667e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3ea4c809.css",
-    "static/js/main.300ac568.js"
+    "static/css/main.3d14bba7.css",
+    "static/js/main.a5de9da3.js"
   ]
 }
