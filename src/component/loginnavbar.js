@@ -53,7 +53,7 @@ const Loginnavbar = () => {
             <FaBars />
           </button>
         </div>
-        <div className='links-container' ref={linksContainerRef}>
+        <div className='links-container' ref={linksContainerRef} >
           <ul className='links' ref={linksRef}>
             {/* data에서 Nav목록 가져오기 */}
             {loginlinks.map((link) => {

@@ -13,6 +13,6 @@ export const PC = ({children}) => {
   const isPc = useMediaQuery({
     query : '(min-width:769px)'
   });
-  
+
   return <>{isPc && children}</>
 }

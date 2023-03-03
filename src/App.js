@@ -40,11 +40,11 @@ const loginOk = (fade) => {
     <div className={"App start " + fade}>
       <BrowserRouter>
 
-        {/* <Mobile>                //모바일 버젼은 추후 개발
+        {/* <Mobile>
           모바일로 접속함
         </Mobile> */}
 
-        <PC>
+        {/* <PC> */}
           <Loginnavbar></Loginnavbar>
 
           <Routes>
@@ -55,7 +55,7 @@ const loginOk = (fade) => {
           </Routes>
 
           <Footer></Footer>
-        </PC>
+        {/* </PC> */}
 
       </BrowserRouter>
     </div>
@@ -68,11 +68,11 @@ const loginNo = (fade) => {
     <div className={"App start " + fade}>
       <BrowserRouter>
 
-        {/* <Mobile>              //모바일 버젼은 추후 개발
+        {/* <Mobile>
           모바일로 접속함
         </Mobile> */}
 
-        <PC>
+        {/* <PC> */}
           <Navbar></Navbar>
 
           <Routes>
@@ -85,7 +85,7 @@ const loginNo = (fade) => {
           </Routes>
 
           <Footer></Footer>
-        </PC>
+        {/* </PC> */}
 
       </BrowserRouter>
     </div>

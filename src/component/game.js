@@ -19,9 +19,31 @@ const Game = () => {
     const [isFlipped, setIsFlipped] = useState(false);                  //카드 플립
     const [isSlide, setIsSlide] = useState(false);                      //카드 슬라이드
 
-    const handleHit = () => {
-        setIsSlide(!isSlide);
+    /* const [resize, setResize] = useState();
+    const handleResize = () => {
+        const windowsize = window.innerWidth;
+        if(windowsize <= 768) {
+            const Toast = Swal.mixin({
+                width: 600,
+            });
+
+            Toast.fire({
+                icon: 'error',
+                title: '메인으로 돌아갑니다.',
+            }).then(result => {
+                if (result.isConfirmed) {
+                  urlmove('/');
+                }
+            });
+        }
     };
+  
+    useEffect(() => {
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }, []); */
 
 
     console.log(location.state);
@@ -31,7 +53,7 @@ const Game = () => {
     }else {
         usermoney = 0;
 
-        /* const Toast = Swal.mixin({
+        const Toast = Swal.mixin({
             width: 600,
         });
 
@@ -42,7 +64,7 @@ const Game = () => {
             if (result.isConfirmed) {
               urlmove('/');
             }
-        }); */
+        });
     }
 
     const randomcard = () => {
@@ -111,13 +133,17 @@ const Game = () => {
     }, []);
 
     useEffect(() => {
-        //if(location.state != null){
+        if(location.state != null){
             randomcard();
-        //}
+        }
     }, []);
 
     const handleFlip = () => {
       setIsFlipped(!isFlipped);             //카드 뒤집는 코드
+    };
+
+    const handleHit = () => {
+        setIsSlide(!isSlide);               //카드 슬라이드 코드
     };
 
     const history = createBrowserHistory();                     // 1. history라는 상수에 createBrowerHistory 함수를 할당한다.
@@ -156,7 +182,7 @@ const Game = () => {
     
 
 
-    /* const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
+    const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
         e.preventDefault();                                // 특정 이벤트에 대한 사용자 에이전트 (브라우저)의 기본 동작이 실행되지 않도록 막는다.
         e.returnValue = ''; 
         // e.preventDefault를 통해서 방지된 이벤트가 제대로 막혔는지 확인할 때 사용한다고 한다.
@@ -173,7 +199,7 @@ const Game = () => {
         return () => {
             window.removeEventListener('beforeunload', preventClose);   // 5. 해당 이벤트 실행 후, beforeunload를 감지하는 것을 제거한다.
         };
-    }); */
+    });
 
 
     return (
@@ -243,7 +269,7 @@ const Game = () => {
                     <button className="gbtn doubledown" onClick={(e) =>  e.preventDefault()}>Double Down</button>
                 </div>
 
-                {/* <div className="usermoney">bankroll : {usermoney}</div> */}
+                <div className="usermoney">bankroll : {usermoney}</div>
             </div>
         </div>
     );
