@@ -238,11 +238,6 @@ const Game = () => {
             </div>
         </div>
     );
-
-
-    const gamepage = () => {
-        
-    }
 }
 
 export default Game;
