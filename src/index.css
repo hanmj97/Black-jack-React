@@ -425,9 +425,10 @@ margin-bottom: 20px;
   width: 7%;
   height: 23%;
   z-index: 100;
-  left: 42%;
-  top: 8%;
+  left: 66%;
+  top: 36%;
   object-fit: contain;
+  /* display: none; */
 }
 
 .flip-container.flip .flipper {
@@ -478,8 +479,9 @@ margin-bottom: 20px;
   position: absolute;
   width: 7%;
   z-index: 100;
-  left: 42%;
-  top: 70%;
+  left: 66%;
+  top: 36%;
+  /* display: none; */
 }
 
 .usercard2 {
@@ -487,6 +489,14 @@ margin-bottom: 20px;
   width: 7%;
   z-index: 100;
   left: 50%;
+  top: 70%;
+}
+
+.usercard {
+  position: absolute;
+  width: 7%;
+  z-index: 100;
+  left: 42%;
   top: 70%;
 }
 
@@ -515,18 +525,88 @@ margin-bottom: 20px;
 .cardstack_img {
   width: 100%;
   height: 100%;
-  max-width : 150px;
+  max-width : 190px;
   object-fit: contain;
 }
 
-.slide-player {
-  transform: translateX(-200%) translateY(-200%);
-  transition: transform 0.9s;
+.slide-player0 {
+  transform: translateX(-650%) translateY(120%);
+  transition: transform 1.0s;
 }
 
-.slide-dealer {
-  transform: translateX(200%) translateY(200%);
-  transition: transform 0.9s;
+.slide-player1 {
+  transform: translateX(-620%) translateY(120%);
+  transition: transform 1.0s;
+}
+
+.slide-player2 {
+  transform: translateX(-590%) translateY(120%);
+  transition: transform 1.0s;
+}
+
+.slide-player3 {
+  transform: translateX(-560%) translateY(120%);
+  transition: transform 1.0s;
+}
+
+.slide-player4 {
+  transform: translateX(-530%) translateY(120%);
+  transition: transform 1.0s;
+}
+
+.slide-player5 {
+  transform: translateX(-500%) translateY(120%);
+  transition: transform 1.0s;
+}
+
+.slide-player6 {
+  transform: translateX(-470%) translateY(120%);
+  transition: transform 1.0s;
+}
+
+.slide-player7 {
+  transform: translateX(-440%) translateY(120%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer0 {
+  transform: translateX(-650%) translateY(-100%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer1 {
+  transform: translateX(-620%) translateY(-100%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer2 {
+  transform: translateX(-590%) translateY(-100%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer3 {
+  transform: translateX(-560%) translateY(-100%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer4 {
+  transform: translateX(-530%) translateY(-100%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer5 {
+  transform: translateX(-500%) translateY(-100%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer6 {
+  transform: translateX(-470%) translateY(-100%);
+  transition: transform 1.0s;
+}
+
+.slide-dealer7 {
+  transform: translateX(-440%) translateY(-100%);
+  transition: transform 1.0s;
 }
 
 

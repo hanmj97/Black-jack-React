@@ -119,7 +119,7 @@ const Game = () => {
                     <img src={nocard} className="testcard2"/>
                 </div>
 
-                <div className="usercard1">
+                <div className="usercard">
                     <img src={nocard} className="testcard"/>
                 </div>
                 <div className="usercard2">

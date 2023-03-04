@@ -11,13 +11,14 @@ import { createBrowserHistory } from 'history';
 const Game = () => {  
     const urlmove = useNavigate();
     const location = useLocation();
-    const left = ["28%", "31%", "34%", "37%", "40%", "43%", "46%", "49%"];
-    const [usercard_array,setUsercard_array] = useState([]);
-    const [dealercard_array,setDealercard_array] = useState([]);
+    const [usercard_array, setUsercard_array] = useState([]);
+    const [dealercard_array, setDealercard_array] = useState([]);
+    let count = 0;
     let usermoney = 0;
     let [fade, setFade] = useState('');
-    const [isFlipped, setIsFlipped] = useState(false);                  //카드 플립
-    const [isSlide, setIsSlide] = useState(false);                      //카드 슬라이드
+    const [isFlipped, setIsFlipped] = useState(false);               //카드 플립
+    const [isUserslide, setIsUserslide] = useState([]);              //카드 슬라이드(user)
+    const [isDealerslide, setIsDealerslide] = useState([]);          //카드 슬라이드(dealer)
 
     /* const [resize, setResize] = useState();
     const handleResize = () => {
@@ -61,7 +62,6 @@ const Game = () => {
             icon: "error",
             title: "새로고침 혹은 뒤로가기가 감지되어 메인으로 돌아갑니다.",
         }).then(function(){
-            //sessionStorage.clear();
             window.location.replace('/');
         });
     }
@@ -74,10 +74,8 @@ const Game = () => {
         }).then((res) => {
             console.log(res.data);
             if(res.data.length == 4){
-                usercard_array.push(res.data[0]);
-                usercard_array.push(res.data[2]);
-                dealercard_array.push(res.data[1]);
-                dealercard_array.push(res.data[3]);
+                setUsercard_array((prevArray) => [...prevArray, res.data[0], res.data[2]]);
+                setDealercard_array((prevArray) => [...prevArray, res.data[1], res.data[3]]);
             }
         }).catch((e) => {
             console.error(e);
@@ -90,7 +88,6 @@ const Game = () => {
             perfectbetsmoney: location.state.perfectbetsmoney,
             betsmoney: location.state.betsmoney,
         }).then((res) => {
-            console.log(res.data);
             if(res.data.length == 4){
                 usercard_array.push(res.data[0]);
                 usercard_array.push(res.data[2]);
@@ -122,10 +119,8 @@ const Game = () => {
 
 
     useEffect(()=>{
-        // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
         const fadeTimer = setTimeout(()=>{ setFade('end') }, 100)
         return ()=>{
-            // 기존 fadeTimer 제거 후 class 빈 값으로 변경
             clearTimeout(fadeTimer);
   	        setFade('')
         }
@@ -138,12 +133,31 @@ const Game = () => {
     }, []);
 
     const handleFlip = () => {
-      setIsFlipped(!isFlipped);             //카드 뒤집는 코드
+      setIsFlipped(!isFlipped);                                                    //카드 플립
     };
 
-    const handleHit = () => {
-        setIsSlide(!isSlide);               //카드 슬라이드 코드
-    };
+
+    useEffect(() => {                                                              //첫 카드 4장 순차 슬라이드
+        const userInterval = setInterval(() => {
+          if (count < (usercard_array.length + dealercard_array.length)) {
+
+            if(count === 0){
+                setIsUserslide([true]);
+            }else if(count === 1){
+                setIsDealerslide([true]);
+            }else if(count === 2){
+                setIsUserslide((data) => [...data, true]);
+            }else if(count === 3){
+                setIsDealerslide((data) => [...data, true]);
+            }
+
+            count++;
+          }
+        }, 500);
+      
+        return () => clearInterval(userInterval);
+    }, [usercard_array, dealercard_array]);
+    
 
     const history = createBrowserHistory();                     // 1. history라는 상수에 createBrowerHistory 함수를 할당한다.
       
@@ -157,7 +171,6 @@ const Game = () => {
             icon: "error",
             title: "새로고침 혹은 뒤로가기가 감지되어 메인으로 돌아갑니다.",
         }).then(function(){
-            //sessionStorage.clear();
             window.location.replace('/');
         });
     };
@@ -211,9 +224,7 @@ const Game = () => {
 
                             if(index == 0){
                                 return (
-                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''} ${isSlide ? 'slide-dealer' : ''}`} style={{
-                                            left : left[index],
-                                        }} onClick={handleFlip}>
+                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''} ${isDealerslide[index] ? `slide-dealer` : ''}${index}`} onClick={handleFlip}>
                                         <div className="flipper">
                                             <div className="back">
                                                 <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
@@ -226,9 +237,7 @@ const Game = () => {
                                 );
                             }else {
                                 return (
-                                    <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''} ${isSlide ? 'slide-dealer' : ''}`} style={{
-                                            left : left[index],
-                                        }} onClick={handleFlip}>
+                                    <div key={index} className={`flip-container ${isDealerslide[index] ? `slide-dealer` : ''}${index}`} >
                                         <div className="flipper">
                                             <div className="front">
                                                 <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
@@ -249,7 +258,7 @@ const Game = () => {
                         usercard_array.map((card, index) => {
                             const url = usercard_array[index].cardimg;
                             return (
-                                <div key={index} className={`cardstack ${isSlide ? 'slide-player' : ''}`}>
+                                <div key={index} className={`usercard1 ${isUserslide[index] ? `slide-player` : ''}${index}`}>
                                     <img src={process.env.PUBLIC_URL + url} className="testcard"/>
                                 </div>
                             )
@@ -262,7 +271,7 @@ const Game = () => {
                 </div>
 
                 <div className="gamebutton">
-                    <button className="gbtn hit"  onClick={handleHit}>Hit</button>
+                    <button className="gbtn hit"  onClick={handleFlip}>Hit</button>
                     <button className="gbtn stay" onClick={(e) =>  e.preventDefault()}>Stay</button>
                     <button className="gbtn doubledown" onClick={(e) =>  e.preventDefault()}>Double Down</button>
                 </div>
