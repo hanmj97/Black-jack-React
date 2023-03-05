@@ -109,7 +109,6 @@ const Container = () => {
             id: loginidRef.current.value,
             pw: loginpwRef.current.value,
         }).then((res) => {
-            console.log(res.data);
             if (res.data.affectedRows === 1){
                 const Toast = Swal.mixin({
                     toast: true,

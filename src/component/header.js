@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 
 export default function Header(props) {
-    console.log(sessionStorage.length);
     return (
         <>
         <div className="wrapper01"></div>

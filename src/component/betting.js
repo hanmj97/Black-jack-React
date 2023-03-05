@@ -107,7 +107,7 @@ const Game = () => {
 
 
                 <div className="backsoundbar">
-                    <AudioPlayer autoPlay src={backgroundsound} onPlay={e => console.log("onPlay")} loop={true} volume={0.1}
+                    <AudioPlayer autoPlay src={backgroundsound} /* onPlay={e => console.log("onPlay")} */ loop={true} volume={0.1}
                         // other props here
                     />
                 </div>
