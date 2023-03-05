@@ -21,8 +21,8 @@ const Game = () => {
     const [firstcard, setFirstcard] = useState(false);
     const [hitcard, setHitcard] = useState(false);
     const [standcard, setStandcard] = useState(false);
-    const [userscore, setUserscore] = useState(0);
-    const [dealerscore, setDealerscore] = useState(0);
+    let userscoreref = useRef(0);
+    let dealerscoreref = useRef(0);
     let count = 0;
     let [fade, setFade] = useState('');
     const [isFlipped, setIsFlipped] = useState(false);               //카드 플립
@@ -60,41 +60,69 @@ const Game = () => {
 
     //console.log("리랜더링");
 
-    const randomcard = () => {
-        Axios.post("http://localhost:8000/randomcard", {
-            userid: "hanmj97",
-            perfectbetsmoney: 0,
-            betsmoney: 10,
-        }).then((res) => {
-            if(res.data.length == 4){
-                setUsercard_array((prevArray) => [...prevArray, res.data[0], res.data[2]]);
-                setDealercard_array((prevArray) => [...prevArray, res.data[1], res.data[3]]);
+    const first_blackjack = () => {
+        let dealercard_result = setTimeout(()=>{
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                width: 600,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
 
-                setFirstcard(true);
 
-                setUserscore(res.data[0].cardnum + res.data[2].cardnum);
-                setDealerscore(res.data[1].cardnum + res.data[3].cardnum);
-            }
-        }).catch((e) => {
-            console.error(e);
-        });
+            Toast.fire({
+                icon: 'info',
+                title: 'Insurance? (구현중..)',
+            }).then(function(){
+                if((dealercard_array[0].cardnum === 11 || dealercard_array[0].cardnum === 10)){
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Dealer BlackJack!!',
+                    }).then(function(){
+                        
+                    });
+                }else{
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Dealer No BlackJack.',
+                    });
+                }
+            });
+        }, 5000);
     }
 
-    /* const hit = async () => {
+
+    const randomcard = async () => {
         try {
-            const response = await Axios.post("http://localhost:8000/hit", {
+            const response = await Axios.post("http://localhost:8000/randomcard", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
             });
 
-            setUsercard_array((prevArray) => [...prevArray, response.data[0]]);
+            if(response.data.length == 4){
+                setUsercard_array((prevArray) => [...prevArray, response.data[0], response.data[2]]);
+                setDealercard_array((prevArray) => [...prevArray, response.data[1], response.data[3]]);
 
-            setHitcard(!hitcard);
+                setFirstcard(true);
+
+                userscoreref.current = response.data[0].cardnum + response.data[2].cardnum;
+                dealerscoreref.current = response.data[1].cardnum + response.data[3].cardnum;
+            }
+
+            if(response.data[2].insurance == 'insurance'){
+                first_blackjack();
+            }
         } catch(err) {
-            console.error(err);
+          console.error(err);
         }
-    } */
+    }
 
     const handleHit = async () => {
         try {
@@ -105,7 +133,8 @@ const Game = () => {
           });
 
           setUsercard_array((prevArray) => [...prevArray, response.data[0]]);
-          setUserscore(userscore + response.data[0].cardnum);
+
+          userscoreref.current = userscoreref.current + response.data[0].cardnum;
 
           setHitcard(!hitcard);
         } catch(err) {
@@ -121,12 +150,12 @@ const Game = () => {
             betsmoney: location.state.betsmoney,
           });
 
-          if(dealerscore >= 17 && dealerscore <= 20){
+          if(dealerscoreref.current >= 17 && dealerscoreref.current <= 20){
             setStandcard(!standcard);
           }else {
             setDealercard_array((prevArray) => [...prevArray, response.data[0]]);
 
-            setDealerscore(dealerscore + response.data[0].cardnum);
+            dealerscoreref.current = dealerscoreref.current + response.data[0].cardnum;
 
             setStandcard(!standcard);
             
@@ -220,73 +249,59 @@ const Game = () => {
                 toast.addEventListener('mouseenter', Swal.stopTimer)
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
-        })
-        if(usercard_array.length === 2 && dealercard_array.length === 2 && dealercard_array[1].cardnum === 10){
-            let cardopen = false;
-
-            Toast.fire({
-                icon: 'info',
-                title: 'Insurance? (구현중..)',
-            }).then(function(){
-                //변수 하나 놓고 true면 한다 false면 안한다하고 아래 if문에서 쓰면될듯 조건으로..
-                cardopen = true;
-            });
-
-            if(cardopen && dealercard_array[0].cardnum === 11){
-
-                Toast.fire({
-                    icon: 'info',
-                    title: 'Dealer BlackJack!!',
-                }).then(function(){
-                    
-                });
-            }else if(cardopen){
-                Toast.fire({
-                    icon: 'info',
-                    title: 'Dealer No BlackJack.',
-                });
-            }
-        }
+        });
 
         let dealercard_result = setTimeout(()=>{
-            if(userscore > 21){
+            if(userscoreref.current > 21){
                 setIsFlipped(!isFlipped);
                 cardflipaudio.play();
 
-                for(var i = 0; i < usercard_array.length; i++){                 //여기 부분이 문제 (유저가 21넘었을때 에이스를 가진상황)
+                for(var i = 0; i < usercard_array.length; i++){        
                     if(usercard_array[i].cardnum === 11){
-                        setUserscore(userscore - 10);
-                    }else if((i + 1) === usercard_array.length && userscore > 21){
-                        Toast.fire({
-                            icon: 'info',
-                            title: 'User Bust!!  You lose!!',
-                        }).then(function(){
-                            urlmove('/Betting');
-                        });
+                        userscoreref.current = userscoreref.current - 10;
+                        console.log("유저 스코어 -10 실행");
                     }
                 }
-            }else if (userscore === 21 && usercard_array.length === 2){
+
+                if(userscoreref.current > 21){
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'User Bust!!  ( You lose!! )',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }else {
+                    console.log("여기임");                              //유저 카드값이 21이 넘으면서 a가 존재하는경우 10작아지면서 여기로 들어옴
+
+                    Toast.fire({
+                        icon: 'info',
+                        title: '구현중..',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }
+            }else if (userscoreref.current === 21 && usercard_array.length === 2){
                 setIsFlipped(!isFlipped);
                 cardflipaudio.play();
 
-                if(userscore == dealerscore && usercard_array.length == dealercard_array.length){
+                if(userscoreref.current == dealerscoreref.current && usercard_array.length == dealercard_array.length){
                     Toast.fire({
                         icon: 'info',
-                        title: 'User BlackJack!!  Dealer BlackJack!!  push!!',
+                        title: 'User BlackJack!!  Dealer BlackJack!! ( push!! )',
                     }).then(function(){
                         urlmove('/Betting');
                     });
                 }else {
                     Toast.fire({
                         icon: 'info',
-                        title: 'User BlackJack!!  You win!!',
+                        title: 'User BlackJack!! ( You win!! )',
                     }).then(function(){
                         urlmove('/Betting');
                     });
                 }
             }
-        }, 1000); 
-    }, [userscore]);
+        }, 1200); 
+    }, [hitcard]);
 
 
 
@@ -325,8 +340,8 @@ const Game = () => {
 
 
     useDidMountEffect(() => {                                                       // 딜러 카드 hit (stand 버튼 클릭시)
-        console.log("현재 유저 카드 합계 : " + userscore);
-        console.log("현재 딜러 카드 합계 : " + dealerscore);
+        console.log("현재 유저 카드 합계 : " + userscoreref.current);
+        console.log("현재 딜러 카드 합계 : " + dealerscoreref.current);
 
         const Toast = Swal.mixin({
             toast: true,
@@ -341,30 +356,32 @@ const Game = () => {
             }
         });
 
+        if(!isFlipped) {
+            setIsFlipped(!isFlipped);
+            cardflipaudio.play();
+        }
+
         let timer = setTimeout(()=>{
             setIsDealerslide((data) => [...data, true]);
             cardslideaudio.play();
         }, 1000);
 
         let timeraudio = setTimeout(()=>{
-            if(dealerscore < 17){
+            if(dealerscoreref.current < 17){
                 handleStand();
-            }else if(dealerscore >= 17 && dealerscore <= 21){
-                setIsFlipped(!isFlipped);
-                cardflipaudio.play();
-                
-                if(userscore == dealerscore) {
+            }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21){
+                if(userscoreref.current == dealerscoreref.current) {
                     Toast.fire({
                         icon: 'info',
-                        title: 'Push..',
+                        title: 'Push..  ( Draw )',
                     }).then(function(){
                         urlmove('/Betting');
                         //userdraw();
                     });
-                }else if (userscore > dealerscore) {
+                }else if (userscoreref.current > dealerscoreref.current) {
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer : ' + dealerscore + ', User : ' + userscore + '  You win!!',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' ( You win!! )',
                     }).then(function(){
                         urlmove('/Betting');
                         //userwin();
@@ -372,50 +389,48 @@ const Game = () => {
                 }else {
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer : ' + dealerscore + ', User : ' + userscore + '  You lose!!',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' ( You lose!! )',
                     }).then(function(){
                         urlmove('/Betting');
                         //userlose();
                     });
                 }
-            }else if(dealerscore > 21){
-                setIsFlipped(!isFlipped);
-                cardflipaudio.play();
-
-                for(var i = 0; i < dealercard_array.length; i++){               //여기 부분이 문제 (딜러가 21넘었을때 에이스를 가진상황)
+            }else if(dealerscoreref.current > 21){
+                for(var i = 0; i < dealercard_array.length; i++){
                     if(dealercard_array[i].cardnum == 11){
+                        dealerscoreref.current = dealerscoreref.current - 10;
                         console.log("딜러 스코어 -10 실행");
-                        setDealerscore(dealerscore - 10);
                     }
                 }
 
-                if(dealerscore > 21){
+                console.log(dealerscoreref.current);
+                if(dealerscoreref.current > 21){
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer Bust!!  You win!!',
+                        title: 'Dealer Bust!!  ( You win!! )',
                     }).then(function(){
                         urlmove('/Betting');
                         //userwin();
                     });
-                }else if(dealerscore <= 21 && userscore < dealerscore){
+                }else if(dealerscoreref.current <= 21 && userscoreref.current < dealerscoreref.current){
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer : ' + dealerscore + ', User : ' + userscore + '  You lose!!',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You lose!! )',
                     }).then(function(){
                         urlmove('/Betting');
                         //userlose();
                     });
-                }else if(dealerscore <= 21 && userscore > dealerscore){
+                }else if(dealerscoreref.current <= 21 && userscoreref.current > dealerscoreref.current){
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer : ' + dealerscore + ', User : ' + userscore + '  You win!!',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You win!! )',
                     }).then(function(){
                         urlmove('/Betting');
                         //userwin();
                     });
                 }
             }
-        }, 1000);
+        }, 1200);
     }, [standcard]);
 
     
