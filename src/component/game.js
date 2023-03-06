@@ -283,6 +283,8 @@ const Game = () => {
 
             userscoreref.current = userscoreref.current + response.data[0].cardnum;
 
+            user_card_ace.current = user_card_ace.current + Number(usercard_array[usercard_array.length - 1].cardnum);
+
             setHitcard(!hitcard);
         } catch(err) {
           console.error(err);
@@ -303,6 +305,8 @@ const Game = () => {
             setDealercard_array((prevArray) => [...prevArray, response.data[0]]);
 
             dealerscoreref.current = dealerscoreref.current + response.data[0].cardnum;
+
+            dealer_card_ace.current = dealer_card_ace.current + Number(dealercard_array[dealercard_array.length - 1].cardnum);
 
             setStandcard(!standcard);
             
@@ -427,8 +431,6 @@ const Game = () => {
         });
 
         let dealercard_result = setTimeout(()=>{
-            user_card_ace.current = user_card_ace.current + Number(usercard_array[usercard_array.length - 1].cardnum);
-
             for(var i = 0; i < usercard_array.length; i++){
                 if(Number(usercard_array[i].cardnum) == 1 && user_card_ace.current < 12){
                     userscoreref.current = userscoreref.current + 10;
@@ -542,8 +544,6 @@ const Game = () => {
         }, 1000);
 
         let timeraudio = setTimeout(()=>{
-            dealer_card_ace.current = dealer_card_ace.current + Number(dealercard_array[dealercard_array.length - 1].cardnum);
-            
             for(var i = 0; i < dealercard_array.length; i++){
                 if(Number(dealercard_array[i].cardnum) == 1 && dealer_card_ace.current < 12){
                     dealerscoreref.current = dealerscoreref.current + 10;
