@@ -43,7 +43,7 @@ setInterval(() => {
     }).catch((e) => {
         console.error(e);
     });
-}, 1000);
+}, 3000);
 
 
 
