@@ -146,6 +146,9 @@ const Game = () => {
                         if(result.isConfirmed){             //인슈어런스 받으면..
                             //여기서 베팅금액 절반 ~ 베팅금액 만큼 받은 후.. 블랙잭인지 아닌지 확인
                             if(response.data[1].cardnum == 10){
+                                setIsFlipped(!isFlipped);
+                                cardflipaudio.play();
+
                                 if(userscoreref.current === dealerscoreref.current) {
                                     userdraw();
                                         
@@ -171,6 +174,9 @@ const Game = () => {
                             }
                         }else {
                             if(response.data[1].cardnum == 10){
+                                setIsFlipped(!isFlipped);
+                                cardflipaudio.play();
+
                                 if(userscoreref.current === dealerscoreref.current) {
                                     userdraw();
                                         
@@ -200,6 +206,9 @@ const Game = () => {
             }else if(response.data[3].cardnum == 10){
                 let dealercard_result = setTimeout(()=>{
                     if(response.data[1].cardnum == 11){
+                        setIsFlipped(!isFlipped);
+                        cardflipaudio.play();
+                        
                         if(userscoreref.current === dealerscoreref.current) {
                             userdraw();
                                 
