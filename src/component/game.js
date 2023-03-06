@@ -208,7 +208,7 @@ const Game = () => {
                     if(response.data[1].cardnum == 11){
                         setIsFlipped(!isFlipped);
                         cardflipaudio.play();
-                        
+
                         if(userscoreref.current === dealerscoreref.current) {
                             userdraw();
                                 
@@ -329,6 +329,9 @@ const Game = () => {
                 }
             });
 
+            setIsFlipped(!isFlipped);
+            cardflipaudio.play();
+            
             Toast.fire({
                 icon: 'info',
                 title: 'User BlackJack!! (bets x 1.4%)',
