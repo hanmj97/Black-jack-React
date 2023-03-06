@@ -61,63 +61,10 @@ const Game = () => {
 
 
 
-
     const first_user_blackjack = () => {
         let dealercard_result = setTimeout(()=>{
             userblackjack();
         }, 5000);
-    }
-
-
-    const first_dealer_blackjack = () => {
-        
-    }
-
-    const dealer_blackjack = () => {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'center-center',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            width: 600,
-            didOpen: (toast) => {
-                toast.addEventListener('mouseenter', Swal.stopTimer)
-                toast.addEventListener('mouseleave', Swal.resumeTimer)
-            }
-        });
-
-        console.log(dealercard_array[0]);      
-
-        if((dealercard_array[0].cardnum === 10)){
-            Toast.fire({
-                icon: 'info',
-                title: 'Dealer BlackJack!!',
-            }).then(function(){
-                if(userscoreref.current === dealerscoreref.current) {
-                    userdraw();
-                    
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'User BlackJack!!  Dealer BlackJack!! ( push!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
-                    });
-                }else {
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'Dealer BlackJack!! ( You lose!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
-                    });
-                }
-            });
-        }else{
-            Toast.fire({
-                icon: 'info',
-                title: 'Dealer No BlackJack.',
-            });
-        }
     }
 
     const first_perfectpair = () => {
@@ -240,22 +187,29 @@ const Game = () => {
                         }
                     });
                 }, 5000);
-            }else if(response.data[1].cardnum == 11 && response.data[3].cardnum == 10){
-                if(userscoreref.current === dealerscoreref.current) {
-                    userdraw();
-                        
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'User BlackJack!!  Dealer BlackJack!! ( push!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
-                    });
+            }else if(response.data[3].cardnum == 10){
+                if(response.data[1].cardnum == 11){
+                    if(userscoreref.current === dealerscoreref.current) {
+                        userdraw();
+                            
+                        Toast.fire({
+                            icon: 'info',
+                            title: 'User BlackJack!!  Dealer BlackJack!! ( push!! )',
+                        }).then(function(){
+                            urlmove('/Betting');
+                        });
+                    }else {
+                        Toast.fire({
+                            icon: 'info',
+                            title: 'Dealer BlackJack!! ( You lose!! )',
+                        }).then(function(){
+                            urlmove('/Betting');
+                        });
+                    }
                 }else {
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer BlackJack!! ( You lose!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
+                        title: 'Dealer No BlackJack!!',
                     });
                 }
             }
