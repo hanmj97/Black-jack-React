@@ -163,6 +163,11 @@ const Game = () => {
                                         urlmove('/Betting');
                                     });
                                 }
+                            }else {
+                                Toast.fire({
+                                    icon: 'info',
+                                    title: 'Dealer No BlackJack!!',
+                                });
                             }
                         }else {
                             if(response.data[1].cardnum == 10){
@@ -183,6 +188,11 @@ const Game = () => {
                                         urlmove('/Betting');
                                     });
                                 }
+                            }else {
+                                Toast.fire({
+                                    icon: 'info',
+                                    title: 'Dealer No BlackJack!!',
+                                });
                             }
                         }
                     });
