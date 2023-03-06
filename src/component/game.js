@@ -114,6 +114,11 @@ const Game = () => {
 
                 user_card_ace.current = response.data[0].cardnum + response.data[2].cardnum;
                 dealer_card_ace.current = response.data[1].cardnum + response.data[3].cardnum;
+
+                if((Number(dealercard_array[0].cardnum) == 1 || Number(dealercard_array[2].cardnum) == 1)&& response.data[0].cardnum + response.data[2].cardnum < 12){
+                    userscoreref.current = userscoreref.current + 10;
+                    console.log("유저 스코어 +10 실행");
+                }
             }
 
             const Toast_insurance = Swal.mixin({
