@@ -148,11 +148,12 @@ const Game = () => {
 
                     <div className="betbtn2">
                     <button className="gbtn betallin" onClick={() => {
+                            const perfectElement = document.getElementById('perfectbetmoney');
                             const resultElement = document.getElementById('bettingmoney');
                             
                             chipaudio.play();
                             
-                            resultElement.value = usermoney;
+                            resultElement.value = usermoney - perfectElement.value;
                         }}>All In</button>
                     </div>
                     <img src={chip5} className="chip5"     onClick={() => {
