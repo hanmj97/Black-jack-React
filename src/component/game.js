@@ -23,6 +23,8 @@ const Game = () => {
     const [standcard, setStandcard] = useState(false);
     let userscoreref = useRef(0);
     let dealerscoreref = useRef(0);
+    let user_card_ace = useRef(0);
+    let dealer_card_ace = useRef(0);
     let count = 0;
     let [fade, setFade] = useState('');
     const [isFlipped, setIsFlipped] = useState(false);               //카드 플립
@@ -86,7 +88,7 @@ const Game = () => {
 
             Toast.fire({
                 icon: 'info',
-                title: 'User Perfect Pair!!!!! (Your PerfectPairBets x 20)',
+                title: 'User Perfect Pair!!!!! (Your PerfectPairBets x 30)',
             });
 
         }, 5000);
@@ -109,6 +111,9 @@ const Game = () => {
 
                 userscoreref.current = response.data[0].cardnum + response.data[2].cardnum;
                 dealerscoreref.current = response.data[1].cardnum + response.data[3].cardnum;
+
+                user_card_ace.current = response.data[0].cardnum + response.data[2].cardnum;
+                dealer_card_ace.current = response.data[1].cardnum + response.data[3].cardnum;
             }
 
             const Toast_insurance = Swal.mixin({
@@ -135,7 +140,7 @@ const Game = () => {
             });
 
 
-            if((response.data[0].cardnum == 10 && response.data[2].cardnum == 11 && dealerscoreref.current != 21) || (response.data[0].cardnum == 11 && response.data[2].cardnum == 10 && dealerscoreref.current != 21)){
+            if((response.data[0].cardnum == 10 && response.data[2].cardnum == 1 && dealerscoreref.current != 21) || (response.data[0].cardnum == 1 && response.data[2].cardnum == 10 && dealerscoreref.current != 21)){
                 first_user_blackjack();
             }else if(response.data[1].insurance == 'insurance'){
                 let dealercard_result = setTimeout(()=>{
@@ -205,7 +210,7 @@ const Game = () => {
                 }, 5000);
             }else if(response.data[3].cardnum == 10){
                 let dealercard_result = setTimeout(()=>{
-                    if(response.data[1].cardnum == 11){
+                    if(response.data[1].cardnum == 1){
                         setIsFlipped(!isFlipped);
                         cardflipaudio.play();
 
@@ -331,7 +336,7 @@ const Game = () => {
 
             setIsFlipped(!isFlipped);
             cardflipaudio.play();
-            
+
             Toast.fire({
                 icon: 'info',
                 title: 'User BlackJack!! (bets x 1.4%)',
@@ -399,25 +404,26 @@ const Game = () => {
         });
 
         let dealercard_result = setTimeout(()=>{
+            user_card_ace.current = user_card_ace.current + Number(usercard_array[usercard_array.length - 1].cardnum);
+
+            for(var i = 0; i < usercard_array.length; i++){
+                if(Number(usercard_array[i].cardnum) == 1 && user_card_ace.current < 12){
+                    userscoreref.current = userscoreref.current + 10;
+                    console.log("유저 스코어 +10 실행");
+                }
+            }
+
             if(userscoreref.current > 21){
-                for(var i = 0; i < usercard_array.length; i++){        
-                    if(usercard_array[i].cardnum === 11){
-                        userscoreref.current = userscoreref.current - 10;
-                        console.log("유저 스코어 -10 실행");
-                    }
-                }
+                setIsFlipped(!isFlipped);
+                cardflipaudio.play();
 
-                if(userscoreref.current > 21){
-                    setIsFlipped(!isFlipped);
-                    cardflipaudio.play();
-
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'User Bust!!  ( You lose!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
-                    });
-                }
+                Toast.fire({
+                    icon: 'info',
+                    title: 'User Bust!!  ( You lose!! )',
+                }).then(function(){
+                    urlmove('/Betting');
+                });
+                
             }else if (userscoreref.current === 21 && usercard_array.length === 2){
                 setIsFlipped(!isFlipped);
                 cardflipaudio.play();
@@ -466,6 +472,9 @@ const Game = () => {
             count++;
           }
         }, 1000);
+
+        console.log(user_card_ace);
+
         return () => clearInterval(userInterval);
     }, [firstcard]);
 
@@ -509,6 +518,15 @@ const Game = () => {
         }, 1000);
 
         let timeraudio = setTimeout(()=>{
+            dealer_card_ace.current = dealer_card_ace.current + Number(dealercard_array[dealercard_array.length - 1].cardnum);
+            
+            for(var i = 0; i < dealercard_array.length; i++){
+                if(Number(dealercard_array[i].cardnum) == 1 && dealer_card_ace.current < 12){
+                    dealerscoreref.current = dealerscoreref.current + 10;
+                    console.log("딜러 스코어 +10 실행");
+                }
+            }
+
             if(dealerscoreref.current < 17){
                 handleStand();
             }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21){
@@ -539,41 +557,32 @@ const Game = () => {
                     });
                 }
             }else if(dealerscoreref.current > 21){
-                for(var i = 0; i < dealercard_array.length; i++){
-                    if(dealercard_array[i].cardnum == 11){
-                        dealerscoreref.current = dealerscoreref.current - 10;
-                        console.log("딜러 스코어 -10 실행");
-                    }
-                }
+                userwin();
 
-                if(dealerscoreref.current > 21){
-                    userwin();
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Dealer Bust!!  ( You win!! )',
+                }).then(function(){
+                    urlmove('/Betting');
+                });
+            }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21 && userscoreref.current < dealerscoreref.current){
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You lose!! )',
+                }).then(function(){
+                    urlmove('/Betting');
+                });
+            }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21 && userscoreref.current > dealerscoreref.current){
+                userwin();
 
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'Dealer Bust!!  ( You win!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
-                    });
-                }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21 && userscoreref.current < dealerscoreref.current){
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You lose!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
-                    });
-                }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21 && userscoreref.current > dealerscoreref.current){
-                    userwin();
-
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You win!! )',
-                    }).then(function(){
-                        urlmove('/Betting');
-                    });
-                }else if(dealerscoreref.current < 17){
+                Toast.fire({
+                    icon: 'info',
+                    title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You win!! )',
+                }).then(function(){
+                    urlmove('/Betting');
+                });
+            }else if(dealerscoreref.current < 17){
                     handleStand();
-                }
             }
         }, 1200);
     }, [standcard]);
