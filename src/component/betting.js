@@ -1,4 +1,4 @@
-import gametable from "../headerimg/gametable.jpg";
+import gametable from "../headerimg/gametable2.jpg";
 import testcard from "../cardimg/1_ace_of_clubs.png";
 import testcard2 from "../cardimg/10_king_of_hearts.png";
 import nocard from "../cardimg/cardback.png";
