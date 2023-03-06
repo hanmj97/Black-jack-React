@@ -11,6 +11,7 @@ import backgroundsound from '../soundeffect/backgroundsound.mp3';
 import cardflipsound from '../soundeffect/cardsound-1.mp3';
 import cardslidesound from '../soundeffect/cardsound-2.mp3';
 import AudioPlayer from 'react-h5-audio-player';
+import $ from 'jquery';
 
 
 const Game = () => {  
@@ -33,6 +34,7 @@ const Game = () => {
     const [isDealerslide, setIsDealerslide] = useState([]);          //카드 슬라이드(dealer)
     var cardslideaudio = new Audio(cardslidesound);
     var cardflipaudio = new Audio(cardflipsound);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
 
     /* const [resize, setResize] = useState();
@@ -60,6 +62,17 @@ const Game = () => {
         window.removeEventListener("resize", handleResize);
       };
     }, []); */
+
+
+    useEffect(() => {                                       //랜더링 후 버튼 6초 비활성화
+        const timer = setTimeout(() => {
+            setIsButtonDisabled(false);
+        }, 6000);
+    
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
 
 
 
@@ -260,17 +273,17 @@ const Game = () => {
 
     const handleHit = async () => {
         try {
-          const response = await Axios.post("http://localhost:8000/hit", {
-            userid: location.state.userid,
-            perfectbetsmoney: location.state.perfectbetsmoney,
-            betsmoney: location.state.betsmoney,
-          });
+            const response = await Axios.post("http://localhost:8000/hit", {
+                userid: location.state.userid,
+                perfectbetsmoney: location.state.perfectbetsmoney,
+                betsmoney: location.state.betsmoney,
+            });
 
-          setUsercard_array((prevArray) => [...prevArray, response.data[0]]);
+            setUsercard_array((prevArray) => [...prevArray, response.data[0]]);
 
-          userscoreref.current = userscoreref.current + response.data[0].cardnum;
+            userscoreref.current = userscoreref.current + response.data[0].cardnum;
 
-          setHitcard(!hitcard);
+            setHitcard(!hitcard);
         } catch(err) {
           console.error(err);
         }
@@ -459,6 +472,7 @@ const Game = () => {
                 }
             }
         }, 800); 
+        
     }, [hitcard]);
 
 
@@ -718,8 +732,38 @@ const Game = () => {
                 </div>
 
                 <div className="gamebutton">
-                    <button className="gbtn hit"  onClick={handleHit}>Hit</button>
-                    <button className="gbtn stay" onClick={handleStand}>Stand</button>
+                    <button className="gbtn hit" disabled={isButtonDisabled} onClick={async () => {  
+                        if (isButtonDisabled) {
+                            return;
+                          }
+                      
+                          setIsButtonDisabled(true);
+                      
+                          try {
+                            // 클릭 처리
+                            await handleHit();
+                          } catch (error) {
+                            console.error(error);
+                          }
+                      
+                          setTimeout(() => setIsButtonDisabled(false), 3000);
+                    }}>Hit</button>
+                    <button className="gbtn stay" disabled={isButtonDisabled} onClick={async () => {  
+                        if (isButtonDisabled) {
+                            return;
+                          }
+                      
+                          setIsButtonDisabled(true);
+                      
+                          try {
+                            // 클릭 처리
+                            await handleStand();
+                          } catch (error) {
+                            console.error(error);
+                          }
+                      
+                          setTimeout(() => setIsButtonDisabled(false), 3000);
+                    }}>Stand</button>
                     <button className="gbtn doubledown" onClick={(e) =>  e.preventDefault()}>Double Down</button>
                 </div>
 
