@@ -198,30 +198,32 @@ const Game = () => {
                     });
                 }, 5000);
             }else if(response.data[3].cardnum == 10){
-                if(response.data[1].cardnum == 11){
-                    if(userscoreref.current === dealerscoreref.current) {
-                        userdraw();
-                            
-                        Toast.fire({
-                            icon: 'info',
-                            title: 'User BlackJack!!  Dealer BlackJack!! ( push!! )',
-                        }).then(function(){
-                            urlmove('/Betting');
-                        });
+                let dealercard_result = setTimeout(()=>{
+                    if(response.data[1].cardnum == 11){
+                        if(userscoreref.current === dealerscoreref.current) {
+                            userdraw();
+                                
+                            Toast.fire({
+                                icon: 'info',
+                                title: 'User BlackJack!!  Dealer BlackJack!! ( push!! )',
+                            }).then(function(){
+                                urlmove('/Betting');
+                            });
+                        }else {
+                            Toast.fire({
+                                icon: 'info',
+                                title: 'Dealer BlackJack!! ( You lose!! )',
+                            }).then(function(){
+                                urlmove('/Betting');
+                            });
+                        }
                     }else {
                         Toast.fire({
                             icon: 'info',
-                            title: 'Dealer BlackJack!! ( You lose!! )',
-                        }).then(function(){
-                            urlmove('/Betting');
+                            title: 'Dealer No BlackJack!!',
                         });
                     }
-                }else {
-                    Toast.fire({
-                        icon: 'info',
-                        title: 'Dealer No BlackJack!!',
-                    });
-                }
+                }, 5000);
             }
 
             if(response.data[0].cardnum == response.data[2].cardnum && response.data[0].cardpattern == response.data[2].cardpattern){
