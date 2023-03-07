@@ -31,7 +31,6 @@ Axios.post("http://localhost:8000/userinfo", {
 }).catch((e) => {
     console.error(e);
 });
-  
 
 setInterval(() => {
     userid = sessionStorage.getItem("id");
