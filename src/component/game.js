@@ -35,6 +35,8 @@ const Game = () => {
     var cardslideaudio = new Audio(cardslidesound);
     var cardflipaudio = new Audio(cardflipsound);
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+    let doubledown_val = useRef(false);
+    const [isdoubledown, setIsdoubledown] = useState(false);
 
 
     /* const [resize, setResize] = useState();
@@ -73,7 +75,6 @@ const Game = () => {
             clearTimeout(timer);
         };
     }, []);
-
 
 
     const first_user_blackjack = () => {
@@ -128,7 +129,7 @@ const Game = () => {
                 user_card_ace.current = response.data[0].cardnum + response.data[2].cardnum;
                 dealer_card_ace.current = response.data[1].cardnum + response.data[3].cardnum;
 
-                if((Number(response.data[0].cardnum) == 1 || Number(response.data[2].cardnum) == 1) && response.data[0].cardnum + response.data[2].cardnum < 12){
+                /* if((Number(response.data[0].cardnum) == 1 || Number(response.data[2].cardnum) == 1) && response.data[0].cardnum + response.data[2].cardnum < 12){
                     userscoreref.current = userscoreref.current + 10;
                     console.log("유저 스코어 +10 실행");
                 }
@@ -136,7 +137,7 @@ const Game = () => {
                 if((Number(response.data[1].cardnum) == 1 || Number(response.data[3].cardnum) == 1) && response.data[1].cardnum + response.data[3].cardnum < 12){
                     dealerscoreref.current = dealerscoreref.current + 10;
                     console.log("딜러 스코어 +10 실행");
-                }
+                } */
             }
 
             const Toast_insurance = Swal.mixin({
@@ -293,32 +294,82 @@ const Game = () => {
 
     const handleStand = async () => {
         try {
-          const response = await Axios.post("http://localhost:8000/stand", {
-            userid: location.state.userid,
-            perfectbetsmoney: location.state.perfectbetsmoney,
-            betsmoney: location.state.betsmoney,
-          });
+            const response = await Axios.post("http://localhost:8000/stand", {
+                userid: location.state.userid,
+                perfectbetsmoney: location.state.perfectbetsmoney,
+                betsmoney: location.state.betsmoney,
+            });
 
-          if(dealerscoreref.current >= 17 && dealerscoreref.current <= 20){
-            setStandcard(!standcard);
-          }else {
-            setDealercard_array((prevArray) => [...prevArray, response.data[0]]);
+            if(dealerscoreref.current >= 17 && dealerscoreref.current <= 20){
+                setStandcard(!standcard);
+            }else {
+                setDealercard_array((prevArray) => [...prevArray, response.data[0]]);
 
-            dealerscoreref.current = dealerscoreref.current + response.data[0].cardnum;
+                dealerscoreref.current = dealerscoreref.current + response.data[0].cardnum;
 
-            dealer_card_ace.current = dealer_card_ace.current + Number(dealercard_array[dealercard_array.length - 1].cardnum);
+                dealer_card_ace.current = dealer_card_ace.current + Number(dealercard_array[dealercard_array.length - 1].cardnum);
 
-            setStandcard(!standcard);
-            
-          }
+                setStandcard(!standcard);
+            }
         } catch(err) {
           console.error(err);
         }
     }
 
+
+    const handleDoubledown = async () => {
+        try {
+            const response = await Axios.post("http://localhost:8000/doubledown", {
+                userid: location.state.userid,
+                perfectbetsmoney: location.state.perfectbetsmoney,
+                betsmoney: location.state.betsmoney,
+            });
+
+            setUsercard_array((prevArray) => [...prevArray, response.data[0]]);
+
+            userscoreref.current = userscoreref.current + response.data[0].cardnum;
+
+            user_card_ace.current = user_card_ace.current + Number(usercard_array[usercard_array.length - 1].cardnum);
+
+            //doubledown_val.current = true;
+
+            setIsdoubledown(!isdoubledown);
+
+            setHitcard(!hitcard);
+          
+        } catch(err) {
+          console.error(err);
+        }
+    }
+
+
     const userwin = async () => {
         try {
             const response = await Axios.post("http://localhost:8000/userwin", {
+                userid: location.state.userid,
+                perfectbetsmoney: location.state.perfectbetsmoney,
+                betsmoney: location.state.betsmoney,
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    const userdoubledownwin = async () => {
+        try {
+            const response = await Axios.post("http://localhost:8000/userdoublewin", {
+                userid: location.state.userid,
+                perfectbetsmoney: location.state.perfectbetsmoney,
+                betsmoney: location.state.betsmoney,
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    const userdoubledownlose = async () => {
+        try {
+            const response = await Axios.post("http://localhost:8000/userdoublelose", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -431,23 +482,27 @@ const Game = () => {
         });
 
         let dealercard_result = setTimeout(()=>{
-            for(var i = 0; i < usercard_array.length; i++){
-                if(Number(usercard_array[i].cardnum) == 1 && user_card_ace.current < 12){
-                    userscoreref.current = userscoreref.current + 10;
-                    console.log("유저 스코어 +10 실행");
-                }
-            }
-
             if(userscoreref.current > 21){
                 setIsFlipped(!isFlipped);
                 cardflipaudio.play();
 
-                Toast.fire({
-                    icon: 'info',
-                    title: 'User Bust!!  ( You lose!! )',
-                }).then(function(){
-                    urlmove('/Betting');
-                });
+                if(isdoubledown){
+                    userdoubledownlose();
+
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'User Bust!! - Doubledown  ( You lose!! )',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }else {
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'User Bust!!  ( You lose!! )',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }
                 
             }else if (userscoreref.current === 21 && usercard_array.length === 2){
                 setIsFlipped(!isFlipped);
@@ -471,6 +526,12 @@ const Game = () => {
                     }).then(function(){
                         urlmove('/Betting');
                     });
+                }
+            }else {
+                if(isdoubledown){
+                    let timer = setTimeout(()=>{
+                        handleStand();
+                    }, 500);
                 }
             }
         }, 800); 
@@ -499,8 +560,6 @@ const Game = () => {
           }
         }, 1000);
 
-        console.log(user_card_ace.current);
-
         return () => clearInterval(userInterval);
     }, [firstcard]);
 
@@ -526,7 +585,7 @@ const Game = () => {
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
-            width: 600,
+            width: 800,
             didOpen: (toast) => {
               toast.addEventListener('mouseenter', Swal.stopTimer)
               toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -544,12 +603,21 @@ const Game = () => {
         }, 1000);
 
         let timeraudio = setTimeout(()=>{
+            for(var i = 0; i < usercard_array.length; i++){
+                if(Number(usercard_array[i].cardnum) == 1 && user_card_ace.current < 12){
+                    userscoreref.current = userscoreref.current + 10;
+                    console.log("유저 스코어 +10 실행");
+                }
+            }
+
             for(var i = 0; i < dealercard_array.length; i++){
                 if(Number(dealercard_array[i].cardnum) == 1 && dealer_card_ace.current < 12){
                     dealerscoreref.current = dealerscoreref.current + 10;
                     console.log("딜러 스코어 +10 실행");
                 }
             }
+
+            console.log(isdoubledown);
 
             if(dealerscoreref.current < 17){
                 handleStand();
@@ -564,47 +632,103 @@ const Game = () => {
                         urlmove('/Betting');
                     });
                 }else if (userscoreref.current > dealerscoreref.current) {
+                    if(isdoubledown){
+                        userdoubledownwin();
+
+                        Toast.fire({
+                            icon: 'info',
+                            title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' - Doubledown ( You win!! )',
+                        }).then(function(){
+                            urlmove('/Betting');
+                        });
+                    }else {
+                        userwin();
+
+                        Toast.fire({
+                            icon: 'info',
+                            title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' ( You win!! )',
+                        }).then(function(){
+                            urlmove('/Betting');
+                        });
+                    }
+                }else {
+                    if(isdoubledown){
+                        userdoubledownlose();
+
+                        Toast.fire({
+                            icon: 'info',
+                            title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' - Doubledown ( You lose!! )',
+                        }).then(function(){
+                            urlmove('/Betting');
+                        });
+                    }else {
+                        Toast.fire({
+                            icon: 'info',
+                            title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' ( You lose!! )',
+                        }).then(function(){
+                            urlmove('/Betting');
+                        });
+                    }
+                }
+            }else if(dealerscoreref.current > 21){
+                console.log("딜러카드 : " + dealerscoreref.current);
+                if(isdoubledown){
+                    userdoubledownwin();
+
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Dealer Bust!! - Doubledown  ( You win!! )',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }else {
                     userwin();
 
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' ( You win!! )',
+                        title: 'Dealer Bust!!  ( You win!! )',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }
+            }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21 && userscoreref.current < dealerscoreref.current){
+                if(isdoubledown){
+                    userdoubledownlose();
+
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' - Doubledown  ( You lose!! )',
                     }).then(function(){
                         urlmove('/Betting');
                     });
                 }else {
                     Toast.fire({
                         icon: 'info',
-                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' ( You lose!! )',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You lose!! )',
                     }).then(function(){
                         urlmove('/Betting');
                     });
                 }
-            }else if(dealerscoreref.current > 21){
-                userwin();
-
-                Toast.fire({
-                    icon: 'info',
-                    title: 'Dealer Bust!!  ( You win!! )',
-                }).then(function(){
-                    urlmove('/Betting');
-                });
-            }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21 && userscoreref.current < dealerscoreref.current){
-                Toast.fire({
-                    icon: 'info',
-                    title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You lose!! )',
-                }).then(function(){
-                    urlmove('/Betting');
-                });
             }else if(dealerscoreref.current >= 17 && dealerscoreref.current <= 21 && userscoreref.current > dealerscoreref.current){
-                userwin();
+                if(isdoubledown){
+                    userdoubledownwin();
 
-                Toast.fire({
-                    icon: 'info',
-                    title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You win!! )',
-                }).then(function(){
-                    urlmove('/Betting');
-                });
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + ' - Doubledown  ( You win!! )',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }else {
+                    userwin();
+
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Dealer : ' + dealerscoreref.current + ', User : ' + userscoreref.current + '  ( You win!! )',
+                    }).then(function(){
+                        urlmove('/Betting');
+                    });
+                }
             }else if(dealerscoreref.current < 17){
                     handleStand();
             }
@@ -740,13 +864,12 @@ const Game = () => {
                           setIsButtonDisabled(true);
                       
                           try {
-                            // 클릭 처리
                             await handleHit();
                           } catch (error) {
                             console.error(error);
                           }
                       
-                          setTimeout(() => setIsButtonDisabled(false), 3000);
+                          setTimeout(() => setIsButtonDisabled(false), 2000);
                     }}>Hit</button>
                     <button className="gbtn stay" disabled={isButtonDisabled} onClick={async () => {  
                         if (isButtonDisabled) {
@@ -756,19 +879,51 @@ const Game = () => {
                           setIsButtonDisabled(true);
                       
                           try {
-                            // 클릭 처리
                             await handleStand();
                           } catch (error) {
                             console.error(error);
                           }
                       
-                          setTimeout(() => setIsButtonDisabled(false), 3000);
+                          setTimeout(() => setIsButtonDisabled(false), 2000);
                     }}>Stand</button>
-                    <button className="gbtn doubledown" onClick={(e) =>  e.preventDefault()}>Double Down</button>
+                    <button className="gbtn doubledown" disabled={isButtonDisabled} onClick={async () => {  
+                        if (isButtonDisabled) {
+                            return;
+                        }
+
+                        if(location.state.resultmoney >= location.state.betsmoney){
+                            setIsButtonDisabled(true);
+                      
+                            try {
+                                await handleDoubledown();
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        }else {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'center-center',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                width: 800,
+                                didOpen: (toast) => {
+                                  toast.addEventListener('mouseenter', Swal.stopTimer)
+                                  toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            });
+
+                            Toast.fire({
+                                icon: "error",
+                                title: "가진 금액이 부족해 DoubleDown을 할 수 없습니다.",
+                            });
+
+                        }
+                    }}>Double Down</button>
                 </div>
 
                 <div className="perfectusermoney">perfectbetsmoney : {location.state != null ? location.state.perfectbetsmoney : 0}</div>
-                <div className="usermoney">betsmoney : {location.state != null ? location.state.betsmoney : 0}</div>
+                <div className="usermoney">betsmoney : {location.state != null ? location.state.betsmoney : 0} <span className={`${isdoubledown ? '' : 'boubledown_bets'}`}> * 2</span></div>
             </div>
         </div>
     );
