@@ -69,7 +69,7 @@ const Game = () => {
     useEffect(() => {                                       //랜더링 후 버튼 6초 비활성화
         const timer = setTimeout(() => {
             setIsButtonDisabled(false);
-        }, 6000);
+        }, 7500);
     
         return () => {
             clearTimeout(timer);
@@ -89,7 +89,7 @@ const Game = () => {
                 toast: true,
                 position: 'center-center',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 2000,
                 timerProgressBar: true,
                 width: 600,
                 didOpen: (toast) => {
@@ -154,7 +154,7 @@ const Game = () => {
                 toast: true,
                 position: 'center-center',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 2000,
                 timerProgressBar: true,
                 width: 600,
                 didOpen: (toast) => {
@@ -403,7 +403,7 @@ const Game = () => {
                 toast: true,
                 position: 'center-center',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 2000,
                 timerProgressBar: true,
                 width: 600,
                 didOpen: (toast) => {
@@ -472,7 +472,7 @@ const Game = () => {
             toast: true,
             position: 'center-center',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
             timerProgressBar: true,
             width: 600,
             didOpen: (toast) => {
@@ -576,14 +576,11 @@ const Game = () => {
 
 
     useDidMountEffect(() => {                                                       // 딜러 카드 hit (stand 버튼 클릭시)
-        console.log("현재 유저 카드 합계 : " + userscoreref.current);
-        console.log("현재 딜러 카드 합계 : " + dealerscoreref.current);
-
         const Toast = Swal.mixin({
             toast: true,
             position: 'center-center',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 2000,
             timerProgressBar: true,
             width: 800,
             didOpen: (toast) => {
@@ -730,6 +727,9 @@ const Game = () => {
                     handleStand();
             }
         }, 1200);
+
+        console.log("현재 유저 카드 합계 : " + userscoreref.current);
+        console.log("현재 딜러 카드 합계 : " + dealerscoreref.current);
     }, [standcard]);
 
     
@@ -854,41 +854,44 @@ const Game = () => {
 
                 <div className="gamebutton">
                     <button className="gbtn hit" disabled={isButtonDisabled} onClick={async () => {  
+                        if (standcard) {
+                            return;
+                        }
                         if (isButtonDisabled) {
                             return;
-                          }
+                        }
                       
-                          setIsButtonDisabled(true);
+                        setIsButtonDisabled(true);
                       
-                          try {
+                        try {
                             await handleHit();
-                          } catch (error) {
+                        } catch (error) {
                             console.error(error);
-                          }
+                        }
                       
-                          setTimeout(() => setIsButtonDisabled(false), 2000);
+                        setTimeout(() => setIsButtonDisabled(false), 3500);
                     }}>Hit</button>
-                    <button className="gbtn stay" disabled={isButtonDisabled} onClick={async () => {  
+                    <button className="gbtn stay" disabled={isButtonDisabled} onClick={async () => {
                         if (isButtonDisabled) {
                             return;
-                          }
+                        }
                       
-                          setIsButtonDisabled(true);
+                        setIsButtonDisabled(true);
                       
-                          try {
+                        try {
                             await handleStand();
-                          } catch (error) {
+                        } catch (error) {
                             console.error(error);
-                          }
+                        }
                       
-                          setTimeout(() => setIsButtonDisabled(false), 2000);
+                        setTimeout(() => setIsButtonDisabled(false), 3500);
                     }}>Stand</button>
                     <button className="gbtn doubledown" id="doubledown_btn" disabled={isButtonDisabled} onClick={async () => {  
                         const Toast = Swal.mixin({
                             toast: true,
                             position: 'center-center',
                             showConfirmButton: false,
-                            timer: 3000,
+                            timer: 2000,
                             timerProgressBar: true,
                             width: 800,
                             didOpen: (toast) => {
@@ -897,14 +900,15 @@ const Game = () => {
                             }
                         });
 
-                        if (hitcard) {
+                        if (hitcard || standcard) {
                             Toast.fire({
                                 icon: "error",
-                                title: "이미 Hit을 했기 때문에 DoubleDown을 하실 수 없습니다.",
+                                title: "이미 Hit이나 Stand를 했기 때문에 DoubleDown을 하실 수 없습니다.",
                             });
 
                             return;
-                        }else if(isButtonDisabled){
+                        }
+                        if (isButtonDisabled) {
                             return;
                         }
 
