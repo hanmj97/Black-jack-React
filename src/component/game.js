@@ -900,12 +900,15 @@ const Game = () => {
                             }
                         });
 
-                        if (hitcard || standcard) {
+                        if (hitcard) {
                             Toast.fire({
                                 icon: "error",
                                 title: "이미 Hit이나 Stand를 했기 때문에 DoubleDown을 하실 수 없습니다.",
                             });
 
+                            return;
+                        }
+                        if(standcard) {
                             return;
                         }
                         if (isButtonDisabled) {
