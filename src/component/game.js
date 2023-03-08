@@ -872,6 +872,9 @@ const Game = () => {
                         setTimeout(() => setIsButtonDisabled(false), 3500);
                     }}>Hit</button>
                     <button className="gbtn stay" disabled={isButtonDisabled} onClick={async () => {
+                        if(standcard) {
+                            return;
+                        }
                         if (isButtonDisabled) {
                             return;
                         }
