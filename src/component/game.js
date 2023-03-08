@@ -604,20 +604,18 @@ const Game = () => {
 
         let timeraudio = setTimeout(()=>{
             for(var i = 0; i < usercard_array.length; i++){
-                if(Number(usercard_array[i].cardnum) == 1 && user_card_ace.current < 12){
+                if(Number(usercard_array[i].cardnum) == 1 && userscoreref.current < 12){
                     userscoreref.current = userscoreref.current + 10;
                     console.log("유저 스코어 +10 실행");
                 }
             }
 
             for(var i = 0; i < dealercard_array.length; i++){
-                if(Number(dealercard_array[i].cardnum) == 1 && dealer_card_ace.current < 12){
+                if(Number(dealercard_array[i].cardnum) == 1 && dealerscoreref.current < 12){
                     dealerscoreref.current = dealerscoreref.current + 10;
                     console.log("딜러 스코어 +10 실행");
                 }
             }
-
-            console.log(isdoubledown);
 
             if(dealerscoreref.current < 17){
                 handleStand();
@@ -671,7 +669,6 @@ const Game = () => {
                     }
                 }
             }else if(dealerscoreref.current > 21){
-                console.log("딜러카드 : " + dealerscoreref.current);
                 if(isdoubledown){
                     userdoubledownwin();
 
@@ -886,8 +883,28 @@ const Game = () => {
                       
                           setTimeout(() => setIsButtonDisabled(false), 2000);
                     }}>Stand</button>
-                    <button className="gbtn doubledown" disabled={isButtonDisabled} onClick={async () => {  
-                        if (isButtonDisabled) {
+                    <button className="gbtn doubledown" id="doubledown_btn" disabled={isButtonDisabled} onClick={async () => {  
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'center-center',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            width: 800,
+                            didOpen: (toast) => {
+                              toast.addEventListener('mouseenter', Swal.stopTimer)
+                              toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+
+                        if (hitcard) {
+                            Toast.fire({
+                                icon: "error",
+                                title: "이미 Hit을 했기 때문에 DoubleDown을 하실 수 없습니다.",
+                            });
+
+                            return;
+                        }else if(isButtonDisabled){
                             return;
                         }
 
@@ -900,24 +917,10 @@ const Game = () => {
                                 console.error(error);
                             }
                         }else {
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: 'center-center',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true,
-                                width: 800,
-                                didOpen: (toast) => {
-                                  toast.addEventListener('mouseenter', Swal.stopTimer)
-                                  toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                }
-                            });
-
                             Toast.fire({
                                 icon: "error",
                                 title: "가진 금액이 부족해 DoubleDown을 할 수 없습니다.",
                             });
-
                         }
                     }}>Double Down</button>
                 </div>
