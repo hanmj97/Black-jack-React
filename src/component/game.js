@@ -80,7 +80,7 @@ const Game = () => {
     const first_user_blackjack = () => {
         let dealercard_result = setTimeout(()=>{
             userblackjack();
-        }, 5000);
+        }, 4000);
     }
 
     const first_perfectpair = () => {
@@ -105,7 +105,7 @@ const Game = () => {
                 title: 'User Perfect Pair!!!!! (Your PerfectPairBets x 30)',
             });
 
-        }, 5000);
+        }, 4000);
     }
 
 
@@ -231,7 +231,7 @@ const Game = () => {
                             }
                         }
                     });
-                }, 5000);
+                }, 4000);
             }else if(response.data[3].cardnum == 10){
                 let dealercard_result = setTimeout(()=>{
                     if(response.data[1].cardnum == 1){
@@ -261,7 +261,7 @@ const Game = () => {
                             title: 'Dealer No BlackJack!!',
                         });
                     }
-                }, 5000);
+                }, 4000);
             }
 
             if(response.data[0].cardnum == response.data[2].cardnum && response.data[0].cardpattern == response.data[2].cardpattern && response.data[0].cardimg == response.data[2].cardimg){
@@ -558,7 +558,7 @@ const Game = () => {
 
             count++;
           }
-        }, 1000);
+        }, 800);
 
         return () => clearInterval(userInterval);
     }, [firstcard]);
