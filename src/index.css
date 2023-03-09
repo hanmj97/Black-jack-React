@@ -256,6 +256,29 @@ margin-bottom: 20px;
   font-weight: bold;
 }
 
+.insurancemoney {
+  position: absolute;
+  width: 25%;
+  z-index: 100;
+  left: 75%;
+  top: 90%;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.notinsurancemoney {
+  position: absolute;
+  width: 25%;
+  z-index: 100;
+  left: 75%;
+  top: 90%;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: bold;
+  display: none;
+}
+
 .perfectusermoney {
   position: absolute;
   width: 25%;

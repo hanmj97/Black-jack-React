@@ -11,7 +11,6 @@ import backgroundsound from '../soundeffect/backgroundsound.mp3';
 import cardflipsound from '../soundeffect/cardsound-1.mp3';
 import cardslidesound from '../soundeffect/cardsound-2.mp3';
 import AudioPlayer from 'react-h5-audio-player';
-import $ from 'jquery';
 
 
 const Game = () => {  
@@ -28,48 +27,20 @@ const Game = () => {
     let dealer_card_ace = useRef(0);
     let count = 0;
     let [fade, setFade] = useState('');
-    const [isFlipped, setIsFlipped] = useState(false);               //카드 플립
-    const [isstandFlipped, setIsstandFlipped] = useState(0);               //카드 플립
-    const [isUserslide, setIsUserslide] = useState([]);              //카드 슬라이드(user)
-    const [isDealerslide, setIsDealerslide] = useState([]);          //카드 슬라이드(dealer)
+    const [isinsurance, setIsinsurance] = useState(false);                //인슈어런스
+    const [isFlipped, setIsFlipped] = useState(false);                  //카드 플립
+    const [isUserslide, setIsUserslide] = useState([]);                 //카드 슬라이드(user)
+    const [isDealerslide, setIsDealerslide] = useState([]);             //카드 슬라이드(dealer)
     var cardslideaudio = new Audio(cardslidesound);
     var cardflipaudio = new Audio(cardflipsound);
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-    let doubledown_val = useRef(false);
     const [isdoubledown, setIsdoubledown] = useState(false);
-
-
-    /* const [resize, setResize] = useState();
-    const handleResize = () => {
-        const windowsize = window.innerWidth;
-        if(windowsize <= 768) {
-            const Toast = Swal.mixin({
-                width: 600,
-            });
-
-            Toast.fire({
-                icon: 'error',
-                title: '메인으로 돌아갑니다.',
-            }).then(result => {
-                if (result.isConfirmed) {
-                  urlmove('/');
-                }
-            });
-        }
-    };
-  
-    useEffect(() => {
-      window.addEventListener("resize", handleResize);
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }, []); */
 
 
     useEffect(() => {                                       //랜더링 후 버튼 6초 비활성화
         const timer = setTimeout(() => {
             setIsButtonDisabled(false);
-        }, 7500);
+        }, 6500);
     
         return () => {
             clearTimeout(timer);
@@ -84,7 +55,7 @@ const Game = () => {
     }
 
     const first_perfectpair = () => {
-        let dealercard_result = setTimeout(()=>{
+        let firstperfectpair = setTimeout(()=>{
             const Toast = Swal.mixin({
                 toast: true,
                 position: 'center-center',
@@ -128,16 +99,6 @@ const Game = () => {
 
                 user_card_ace.current = response.data[0].cardnum + response.data[2].cardnum;
                 dealer_card_ace.current = response.data[1].cardnum + response.data[3].cardnum;
-
-                /* if((Number(response.data[0].cardnum) == 1 || Number(response.data[2].cardnum) == 1) && response.data[0].cardnum + response.data[2].cardnum < 12){
-                    userscoreref.current = userscoreref.current + 10;
-                    console.log("유저 스코어 +10 실행");
-                }
-
-                if((Number(response.data[1].cardnum) == 1 || Number(response.data[3].cardnum) == 1) && response.data[1].cardnum + response.data[3].cardnum < 12){
-                    dealerscoreref.current = dealerscoreref.current + 10;
-                    console.log("딜러 스코어 +10 실행");
-                } */
             }
 
             const Toast_insurance = Swal.mixin({
@@ -167,13 +128,14 @@ const Game = () => {
             if((response.data[0].cardnum == 10 && response.data[2].cardnum == 1 && dealerscoreref.current != 21) || (response.data[0].cardnum == 1 && response.data[2].cardnum == 10 && dealerscoreref.current != 21)){
                 first_user_blackjack();
             }else if(response.data[1].insurance == 'insurance'){
-                let dealercard_result = setTimeout(()=>{
+                let insurance_result = setTimeout(()=>{
                     Toast_insurance.fire({
                         icon: 'info',
-                        title: 'Insurance? (구현중..)',
+                        title: 'Insurance?',
                     }).then(result => {
-                        if(result.isConfirmed){             //인슈어런스 받으면..
-                            //여기서 베팅금액 절반 ~ 베팅금액 만큼 받은 후.. 블랙잭인지 아닌지 확인
+                        if(result.isConfirmed){                 //인슈어런스 받으면..
+                            setIsinsurance(true);               //여기서 베팅금액 절반 ~ 베팅금액 만큼 받은 후.. 블랙잭인지 아닌지 확인
+
                             if(response.data[1].cardnum == 10){
                                 setIsFlipped(!isFlipped);
                                 cardflipaudio.play();
@@ -188,6 +150,8 @@ const Game = () => {
                                         urlmove('/Betting');
                                     });
                                 }else {
+                                    userinsurancelose();
+
                                     Toast.fire({
                                         icon: 'info',
                                         title: 'Dealer BlackJack!! ( You lose!! )',
@@ -196,6 +160,8 @@ const Game = () => {
                                     });
                                 }
                             }else {
+                                userinsurancelose();
+
                                 Toast.fire({
                                     icon: 'info',
                                     title: 'Dealer No BlackJack!!',
@@ -233,7 +199,7 @@ const Game = () => {
                     });
                 }, 4000);
             }else if(response.data[3].cardnum == 10){
-                let dealercard_result = setTimeout(()=>{
+                let notinsurance_result = setTimeout(()=>{
                     if(response.data[1].cardnum == 1){
                         setIsFlipped(!isFlipped);
                         cardflipaudio.play();
@@ -331,12 +297,9 @@ const Game = () => {
 
             user_card_ace.current = user_card_ace.current + Number(usercard_array[usercard_array.length - 1].cardnum);
 
-            //doubledown_val.current = true;
-
             setIsdoubledown(!isdoubledown);
 
             setHitcard(!hitcard);
-          
         } catch(err) {
           console.error(err);
         }
@@ -373,6 +336,18 @@ const Game = () => {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    const userinsurancelose = async () => {
+        try {
+            const response = await Axios.post("http://localhost:8000/userinsurancelose", {
+                userid: location.state.userid,
+                perfectbetsmoney: location.state.perfectbetsmoney,
+                betsmoney: Number(location.state.betsmoney) / 2,
             });
         } catch(err) {
             console.error(err);
@@ -441,10 +416,10 @@ const Game = () => {
 
 
     useEffect(()=>{
-        const fadeTimer = setTimeout(()=>{ setFade('end') }, 100)
+        const fadeTimer = setTimeout(()=>{ setFade('end') }, 100);
         return ()=>{
             clearTimeout(fadeTimer);
-  	        setFade('')
+  	        setFade('');
         }
     }, []);
 
@@ -481,7 +456,7 @@ const Game = () => {
             }
         });
 
-        let dealercard_result = setTimeout(()=>{
+        let dealer_vs_user = setTimeout(()=>{
             if(userscoreref.current > 21){
                 setIsFlipped(!isFlipped);
                 cardflipaudio.play();
@@ -541,23 +516,38 @@ const Game = () => {
 
 
     useEffect(() => {                                                              //첫 카드 4장 순차 슬라이드
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'center-center',
+            showConfirmButton: false,
+            timer: 6000,
+            timerProgressBar: true,
+            width: 600,
+        });
+
+        Toast.fire({
+            icon: 'info',
+            title: 'Wait... The dealer is drawing cards.',
+        });
+
         const userInterval = setInterval(() => {
-          if (count < (usercard_array.length + dealercard_array.length)) {
 
-            if(count === 0){
-                setIsUserslide([true]);
-            }else if(count === 1){
-                setIsDealerslide([true]);
-            }else if(count === 2){
-                setIsUserslide((data) => [...data, true]);
-            }else if(count === 3){
-                setIsDealerslide((data) => [...data, true]);
+            if (count < (usercard_array.length + dealercard_array.length)) {
+
+                if(count === 0){
+                    setIsUserslide([true]);
+                }else if(count === 1){
+                    setIsDealerslide([true]);
+                }else if(count === 2){
+                    setIsUserslide((data) => [...data, true]);
+                }else if(count === 3){
+                    setIsDealerslide((data) => [...data, true]);
+                }
+
+                cardslideaudio.play();
+
+                count++;
             }
-
-            cardslideaudio.play();
-
-            count++;
-          }
         }, 800);
 
         return () => clearInterval(userInterval);
@@ -597,9 +587,9 @@ const Game = () => {
         let timer = setTimeout(()=>{
             setIsDealerslide((data) => [...data, true]);
             cardslideaudio.play();
-        }, 1000);
+        }, 800);
 
-        let timeraudio = setTimeout(()=>{
+        let dealer_vs_user_stand = setTimeout(()=>{
             for(var i = 0; i < usercard_array.length; i++){
                 if(Number(usercard_array[i].cardnum) == 1 && userscoreref.current < 12){
                     userscoreref.current = userscoreref.current + 10;
@@ -728,8 +718,8 @@ const Game = () => {
             }
         }, 1200);
 
-        console.log("현재 유저 카드 합계 : " + userscoreref.current);
-        console.log("현재 딜러 카드 합계 : " + dealerscoreref.current);
+        console.log("유저 카드 합계 : " + userscoreref.current);
+        console.log("딜러 카드 합계 : " + dealerscoreref.current);
     }, [standcard]);
 
     
@@ -765,27 +755,6 @@ const Game = () => {
     useEffect(() => {
         history.push(null, '', history.location.href);                      // 4-1. 현재 상태를 세션 히스토리 스택에 추가(push)한다.
     }, [history.location]);                                                 // 4. history.location (pathname)이 변경될때마다
-    
-
-
-    /* const preventClose = (e) => {                          // 새로고침을 감지하는 함수생성
-        e.preventDefault();                                // 특정 이벤트에 대한 사용자 에이전트 (브라우저)의 기본 동작이 실행되지 않도록 막는다.
-        e.returnValue = ''; 
-        // e.preventDefault를 통해서 방지된 이벤트가 제대로 막혔는지 확인할 때 사용한다고 한다.
-        // 더 이상 쓰이지 않지만, chrome 설정상 필요하다고 하여 추가함.
-        // returnValue가 true일 경우 이벤트는 그대로 실행되고, false일 경우 실행되지 않는다고 한다.
-    };
-        
-    useEffect(() => {
-        (() => {
-        window.addEventListener('beforeunload', preventClose);          // beforeunload 이벤트는 리소스가 사라지기 전 window 자체에서 발행한다.
-                                                                        // window의 이벤트를 감지하여 beforunload 이벤트 발생 시 preventClose 함수가 실행된다.
-        })();
-        
-        return () => {
-            window.removeEventListener('beforeunload', preventClose);   // 5. 해당 이벤트 실행 후, beforeunload를 감지하는 것을 제거한다.
-        };
-    }); */
 
 
     return (
@@ -794,9 +763,7 @@ const Game = () => {
                 <img src={gametable} className='gametable' alt='gametable' />
 
                 <div className="backsoundbar">
-                    <AudioPlayer autoPlay src={backgroundsound} /* onPlay={e => console.log("onPlay")} */ loop={true} volume={0.1}
-                        // other props here
-                    />
+                    <AudioPlayer autoPlay src={backgroundsound} loop={true} volume={0.1}/>
                 </div>
 
                 <div>
@@ -935,8 +902,9 @@ const Game = () => {
                     }}>Double Down</button>
                 </div>
 
-                <div className="perfectusermoney">perfectbetsmoney : {location.state != null ? location.state.perfectbetsmoney : 0}</div>
-                <div className="usermoney">betsmoney : {location.state != null ? location.state.betsmoney : 0} <span className={`${isdoubledown ? '' : 'boubledown_bets'}`}> * 2</span></div>
+                <div className="perfectusermoney">Perfectbets Money : {location.state != null ? location.state.perfectbetsmoney : 0}</div>
+                <div className="usermoney">Bets Money : {location.state != null ? location.state.betsmoney : 0} <span className={`${isdoubledown ? '' : 'boubledown_bets'}`}> * 2</span></div>
+                <div className={`${isinsurance ? 'insurancemoney' : 'notinsurancemoney'}`}>Insurance Money : {isinsurance ? Number(location.state.betsmoney) / 2 : 0}</div>
             </div>
         </div>
     );

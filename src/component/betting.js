@@ -1,92 +1,41 @@
 import gametable from "../headerimg/gametable2.jpg";
-import testcard from "../cardimg/1_ace_of_clubs.png";
-import testcard2 from "../cardimg/10_king_of_hearts.png";
 import nocard from "../cardimg/cardback.png";
 import chip1 from "../chipimg/1_white_chip.png";
 import chip5 from "../chipimg/5_red_chip.png";
 import chip10 from "../chipimg/10_blue_chip.png";
 import chip25 from "../chipimg/25_green_chip.png";
 import chip100 from "../chipimg/100_black_chip.png";
-import soundicon from "../headerimg/soundicon.png";
 import React, { useEffect, useRef, useState } from 'react';
 import Axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
 import backgroundsound from '../soundeffect/backgroundsound.mp3';
 import chipsound from '../soundeffect/chipsound.mp3';
-import useSound from 'use-sound';
 import AudioPlayer from 'react-h5-audio-player';
 
 
 let userid = "";
 let usermoney = 0;
 
-
-userid = sessionStorage.getItem("id");
-
-Axios.post("http://localhost:8000/userinfo", {
-    id: sessionStorage.getItem("id"),
-}).then((res) => {
-    usermoney = Number(res.data.usermoney);
-}).catch((e) => {
-    console.error(e);
-});
-
-setInterval(() => {
-    userid = sessionStorage.getItem("id");
-
-    Axios.post("http://localhost:8000/userinfo", {
-        id: sessionStorage.getItem("id"),
-    }).then((res) => {  
-        usermoney = Number(res.data.usermoney);
-    }).catch((e) => {
-        console.error(e);
-    });
-}, 3000);
-
-
-
 const Game = () => {  
     const urlmove = useNavigate();
     const battingmoney = 0;
     let [fade, setFade] = useState('');
+    const [ismoney, setIsmoney] = useState(0);
     var chipaudio = new Audio(chipsound);
-    /* const audio = new Audio(backgroundsound);
-    let playstatus = false;
-    const [isPlaying, setIsPlaying] = React.useState(false); */
 
 
-    /* const playbacksound = () => {
-        if(playstatus) {
-            playstatus = false;
+    userid = sessionStorage.getItem("id");
 
-            audio.pause();        // mp3 재생
-        }else {
-            playstatus = true;
-
-            audio.loop = true;   // 반복재생하지 않음
-            audio.volume = 0.2;  // 음량 설정
-            audio.muted = true;
-            audio.play();        // mp3 재생
-            audio.muted = false;
-        }
-    } 
-
-    const [play, {pause}] = useSound(backgroundsound, {
-        volume: 0.2,
-        onplay: () => setIsPlaying(true),
-        onend: () => setIsPlaying(false),
+    Axios.post("http://localhost:8000/userinfo", {
+        id: sessionStorage.getItem("id"),
+    }).then((res) => {
+        usermoney = Number(res.data.usermoney);
+        setIsmoney(Number(res.data.usermoney));
+    }).catch((e) => {
+        console.error(e);
     });
 
-    const togglePlay = () => {
-        if (isPlaying) {
-            pause();
-        } else {
-            play();
-        }
-        setIsPlaying(!isPlaying);
-    }
-    */
 
     useEffect(() => {
         // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
