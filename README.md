@@ -1,3 +1,13 @@
+# 업로드 파일 확인
+main branch 에서 확인가능
+
+# 상세
+개발기간 : 3주
+개발환경 : React + Node.js + Mysql + VsCode
+개발목적 : React와 Node.js의 학습 및 이해
+ 
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -70,6 +80,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 
+# 블랙잭게임 설명 및 규칙
 
 블랙잭 게임이란?
 먼저 베팅 금액을 정한다. 배당율은 건 금액만큼을 받는 게 기본. 100원을 걸어 이기면 200원을 받고 지면 건 금액인 100원을 잃는다.
