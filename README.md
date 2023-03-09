@@ -1,3 +1,12 @@
+# 업로드 파일 확인
+main branch 에서 확인가능
+
+# 상세
+개발기간 : 3주
+개발환경 : React + Node.js + Mysql + VsCode
+개발목적 : React와 Node.js의 학습 및 이해
+ 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
