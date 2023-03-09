@@ -3,7 +3,9 @@ main branch 에서 확인가능
 
 # 상세
 개발기간 : 3주
+
 개발환경 : React + Node.js + Mysql + VsCode
+
 개발목적 : React와 Node.js의 학습 및 이해
  
 
