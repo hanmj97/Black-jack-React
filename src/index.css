@@ -1883,7 +1883,7 @@
     /* 배경이미지는 최소 1920*960으로 제작해야 문제가 안생김 */
     background-image: url("headerimg/blackjack-card.jpg");
     background-repeat: no-repeat; /* 배경이미지X */
-    background-position: top center; /* 이미지를 요소의 정가운데로 처리 */
+    background-position: center center; /* 이미지를 요소의 정가운데로 처리 */
     background-size: cover; /* 요소를 비율에 맞게 커버 */
     background-attachment: fixed; /* 스크롤바 움직일때 이미지가 따라다님 */
   }
@@ -1894,7 +1894,7 @@
     /* 배경이미지는 최소 1920*960으로 제작해야 문제가 안생김 */
     background-image: url("headerimg/sub_visual01.jpg");
     background-repeat: no-repeat; /* 배경이미지X */
-    background-position: top center; /* 이미지를 요소의 정가운데로 처리 */
+    background-position: center center; /* 이미지를 요소의 정가운데로 처리 */
     background-size: cover; /* 요소를 비율에 맞게 커버 */
     background-attachment: fixed; /* 스크롤바 움직일때 이미지가 따라다님 */
   }
@@ -3043,14 +3043,13 @@
     position: relative;
     color: #fff;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 20px;
     background-color: #222;
     padding: 17px 60px;
     margin: 0 auto;
     box-shadow: 0 5px 15px rgba(0,0,0,0.20);
     width: fit-content;
     height: 100%;
-    font-size: 30px;
   }
 
   .gamebtn span {
