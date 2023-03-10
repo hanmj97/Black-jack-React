@@ -99,6 +99,12 @@ const Game = () => {
 
                 user_card_ace.current = response.data[0].cardnum + response.data[2].cardnum;
                 dealer_card_ace.current = response.data[1].cardnum + response.data[3].cardnum;
+
+                if(response.data[1].cardnum + response.data[3].cardnum >= 7 && response.data[1].cardnum + response.data[3].cardnum <= 11){
+                    dealerscoreref.current = dealerscoreref.current + 10;
+                    dealer_card_ace.current = dealer_card_ace.current + 10;
+                    console.log("딜러 스코어 +10 실행");
+                }
             }
 
             const Toast_insurance = Swal.mixin({
