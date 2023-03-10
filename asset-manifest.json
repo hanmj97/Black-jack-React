@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/Black-jack-React/static/css/main.080286d5.css",
+    "main.css": "/Black-jack-React/static/css/main.52ee1e14.css",
     "main.js": "/Black-jack-React/static/js/main.9419baae.js",
     "static/js/787.cacf667e.chunk.js": "/Black-jack-React/static/js/787.cacf667e.chunk.js",
     "static/media/backgroundsound.mp3": "/Black-jack-React/static/media/backgroundsound.d2ee92666b84d85c9859.mp3",
@@ -22,12 +22,12 @@
     "static/media/cardsound-2.mp3": "/Black-jack-React/static/media/cardsound-2.0c28da064fbb6292ae28.mp3",
     "static/media/chipsound.mp3": "/Black-jack-React/static/media/chipsound.0fa341aecfb7bb9d095e.mp3",
     "index.html": "/Black-jack-React/index.html",
-    "main.080286d5.css.map": "/Black-jack-React/static/css/main.080286d5.css.map",
+    "main.52ee1e14.css.map": "/Black-jack-React/static/css/main.52ee1e14.css.map",
     "main.9419baae.js.map": "/Black-jack-React/static/js/main.9419baae.js.map",
     "787.cacf667e.chunk.js.map": "/Black-jack-React/static/js/787.cacf667e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.080286d5.css",
+    "static/css/main.52ee1e14.css",
     "static/js/main.9419baae.js"
   ]
 }
