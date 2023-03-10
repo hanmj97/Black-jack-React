@@ -1,4 +1,4 @@
-import gametable from "../headerimg/gametable.png";
+import gametable from "../headerimg/gametable2.jpg";
 import nocard from "../cardimg/cardback.png";
 import cardstack from "../cardimg/card_stack.png";
 import React, { useEffect, useRef, useState } from 'react';

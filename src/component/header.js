@@ -27,7 +27,7 @@ export default function Header(props) {
                 </div>
                 <div className="rules-area01">
                     <div className="rules-name">Insurance</div>
-                    <div className="rules-value">딜러의 오픈 카드가 Ace일 경우 플레이어는 베팅액의 1/2범위 내에서 보험금을 걸 수 있습니다.<br></br># 딜러가 블랙잭인 경우 : 보험금의 두 배를 돌려받습니다.<br></br># 딜러가 블랙잭이 아닐 경우 : 보험금을 잃게 됩니다.</div>
+                    <div className="rules-value">딜러의 오픈 카드가 Ace일 경우 플레이어는 베팅액의 1/2의 보험금을 걸 수 있습니다.<br></br># 딜러가 블랙잭인 경우 : 보험금의 두 배를 돌려받습니다.<br></br># 딜러가 블랙잭이 아닐 경우 : 보험금을 잃게 됩니다.</div>
                 </div>
                 <div className="rules-area01">
                     <div className="rules-name">Push</div>
@@ -35,7 +35,7 @@ export default function Header(props) {
                 </div>
                 <div className="rules-area02">
                     <div className="rules-name">Blackjack</div>
-                    <div className="rules-value">처음 두 장의 카드 합이 21일 경우를 말하며 베팅 금액의 1.5배의 금액을 받습니다.</div>
+                    <div className="rules-value">처음 두 장의 카드 합이 21일 경우를 말하며 베팅 금액의 1.4배의 금액을 받습니다.</div>
                 </div>
             </section>
         </div>

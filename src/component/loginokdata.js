@@ -1,7 +1,7 @@
 export const loginlinks = [
     {
       id: 1,
-      url: '/',
+      url: '/Black-jack-React',
       text: 'Home',
     },
     {

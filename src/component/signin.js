@@ -70,7 +70,7 @@ const Container = () => {
                     icon: 'success',
                     title: '아이디가 정상적으로 생성되었습니다. <br/> 생성된 아이디로 로그인해주세요.',
                 }).then(function(){
-                    urlmove('/');
+                    urlmove('/Black-jack-React');
                 });
                 
             }else {
@@ -130,7 +130,7 @@ const Container = () => {
                     sessionStorage.setItem("id", loginidRef.current.value);
                     sessionStorage.setItem("name", res.data.username);
                     sessionStorage.setItem("chip", res.data.usermoney);
-                    window.location.replace("/");
+                    window.location.replace("/Black-jack-React");
                 });
 
             }else {

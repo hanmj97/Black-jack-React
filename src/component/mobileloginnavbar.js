@@ -61,10 +61,7 @@ const Loginnavbar = () => {
 
               if(location.pathname == "/logout" || location.pathname == "/Betting" || location.pathname == "/Game"){
                 return (
-                  <li key={id} style={{
-                      margin: "30px",
-                      marginLeft: "100px",
-                  }}>
+                  <li key={id} className="navbar_link">
                     <Link onClick={() => {
                       const Toast = Swal.mixin({
                         width: 500,
@@ -88,10 +85,7 @@ const Loginnavbar = () => {
                 );
               }else {
                 return (
-                  <li key={id} style={{
-                      margin: "30px",
-                      marginLeft: "100px",
-                  }}>
+                  <li key={id} className="navbar_link">
                     <LinkRoll activeClass="active" smooth spy to={text}>
                       <div>{text}</div>
                     </LinkRoll>
@@ -99,29 +93,24 @@ const Loginnavbar = () => {
                 );
               }
             })}
+            <div className='userinfo'>"{sessionStorage.getItem("name")}" 님 환영합니다.</div>
+            {loginsocial.map((socialIcon) => {
+              const { id, url, text } = socialIcon;
+              return (
+                <li key={id}>
+                  <div className="frame">
+                  <button className="custom-btn" style={{
+                    fontSize: '13px',
+                    color: 'black',
+                    lineHeight: '45px',
+                    height: '100%',
+                  }} onClick={Logoutbtn}>{text}</button>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
-
-        <div className='userinfo'>"{sessionStorage.getItem("name")}" 님 환영합니다.</div>
-
-        <ul className='social-icons'>
-          {loginsocial.map((socialIcon) => {
-            const { id, url, text } = socialIcon;
-            return (
-              <li key={id}>
-                <div className="frame">
-                <button className="custom-btn" style={{
-                  display: 'block',
-                  fontSize: '13px',
-                  color: 'black',
-                  lineHeight: '45px',
-                  height: '100%',
-                }} onClick={Logoutbtn}>{text}</button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
       </div>
     </nav>
   );

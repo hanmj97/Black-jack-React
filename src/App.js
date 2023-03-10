@@ -2,12 +2,15 @@ import Header from "./component/header.js";
 import Footer from "./component/footer.js";
 import {Mobile, PC} from "./component/pcormobile.js";
 import Navbar from "./component/navbar.js";
+import MNavbar from "./component/mobilenavbar.js";
 import { BrowserRouter, Routes, Route, Link, Outlet } from "react-router-dom";
 import Signin from "./component/signin.js";
 import Createaccount from "./component/createaccount.js";
 import React, { useEffect, useState } from "react";
 import Loginnavbar from "./component/loginnavbar.js";
+import MLoginnavbar from "./component/mobileloginnavbar.js";
 import Game from "./component/game.js";
+import MGame from "./component/mobilegame.js";
 import Betting from "./component/betting.js"
 import Axios from "axios";
 
@@ -30,8 +33,6 @@ function App() {
     setLogState(sessionStorage.getItem("id"));
   });
 
-  console.log(sessionStorage);
-
   return <div>{logState === null ? loginNo(fade) : loginOk(fade)}</div>;
 }
 
@@ -40,11 +41,20 @@ const loginOk = (fade) => {
     <div className={"App start " + fade}>
       <BrowserRouter>
 
-        {/* <Mobile>
-          모바일로 접속함
-        </Mobile> */}
+        <Mobile>
+          <MLoginnavbar></MLoginnavbar>
 
-        {/* <PC> */}
+          <Routes>
+            <Route path="/Black-jack-React" element={<Header></Header>}></Route>
+            <Route path="/" element={<Header></Header>}></Route>
+            <Route path="/Game" element={<MGame></MGame>}></Route>
+            <Route path="/Betting" element={<Betting></Betting>}></Route>
+          </Routes>
+
+          <Footer></Footer>
+        </Mobile>
+
+        <PC>
           <Loginnavbar></Loginnavbar>
 
           <Routes>
@@ -55,7 +65,7 @@ const loginOk = (fade) => {
           </Routes>
 
           <Footer></Footer>
-        {/* </PC> */}
+        </PC>
 
       </BrowserRouter>
     </div>
@@ -68,11 +78,22 @@ const loginNo = (fade) => {
     <div className={"App start " + fade}>
       <BrowserRouter>
 
-        {/* <Mobile>
-          모바일로 접속함
-        </Mobile> */}
+        <Mobile>
+          <MNavbar></MNavbar>
 
-        {/* <PC> */}
+          <Routes>
+            <Route path="/Black-jack-React" element={<Header></Header>}></Route>
+            <Route path="/" element={<Header></Header>}></Route>
+            <Route path="/Signin" element={<Signin></Signin>}></Route>
+            <Route path="/Createaccount" element={<Createaccount></Createaccount>}></Route>
+            <Route path="/Game" element={<MGame></MGame>}></Route>
+            <Route path="/Betting" element={<Betting></Betting>}></Route>
+          </Routes>
+
+          <Footer></Footer>
+        </Mobile>
+
+        <PC>
           <Navbar></Navbar>
 
           <Routes>
@@ -85,7 +106,7 @@ const loginNo = (fade) => {
           </Routes>
 
           <Footer></Footer>
-        {/* </PC> */}
+        </PC>
 
       </BrowserRouter>
     </div>

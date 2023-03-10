@@ -41,13 +41,13 @@ const Navbar = () => {
 
               if(location.pathname == "/Signin" || location.pathname == "/Createaccount" || location.pathname == "/Betting" || location.pathname == "/Game"){
                 return (
-                  <li key={id} class="navbar_link">
+                  <li key={id} className="navbar_link">
                     <Link to="/Black-jack-React">{text}</Link>
                   </li>
                 );
               }else {
                 return (
-                  <li key={id} class="navbar_link">
+                  <li key={id} className="navbar_link">
                     <LinkRoll activeClass="active" smooth spy to={text}>
                       <div>{text}</div>
                     </LinkRoll>
@@ -55,27 +55,17 @@ const Navbar = () => {
                 );
               }
             })}
+            {social.map((link) => {
+                const { id, url, text } = link;
+
+                return (
+                  <li key={id} className="navbar_link">
+                    <Link to={url}>{text}</Link>
+                  </li>
+                );
+            })}
           </ul>
         </div>
-
-        <ul className='social-icons'>
-          {social.map((socialIcon) => {
-            const { id, url, text } = socialIcon;
-            return (
-              <li key={id}>
-                <div className="frame">
-                <button className="custom-btn"><Link to={url} style={{
-                  display: 'block',
-                  fontSize: '13px',
-                  color: 'black',
-                  lineHeight: '45px',
-                  height: '100%',
-                }}>{text}</Link></button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
       </div>
     </nav>
   );

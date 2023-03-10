@@ -192,7 +192,7 @@ const Game = () => {
                                         icon: 'error',
                                         title: '가진 돈이 최소 베팅금액보다 적습니다.',
                                     }).then(function(){
-                                        urlmove('/');
+                                        urlmove('/Black-jack-React');
                                     });
                                 }else if(usermoney >= 10 && resultElement.value < 10){
                                     const Toast = Swal.mixin({
