@@ -1046,6 +1046,10 @@
   .show-container {
     height: 10rem;
   }
+  .navbar_link{
+    margin: 30px;
+    margin-left: 100px;
+  }
   @media screen and (min-width: 800px) {
     .nav-center {
       max-width: 1350px;

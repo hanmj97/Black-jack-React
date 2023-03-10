@@ -41,13 +41,13 @@ const Navbar = () => {
 
               if(location.pathname == "/Signin" || location.pathname == "/Createaccount" || location.pathname == "/Betting" || location.pathname == "/Game"){
                 return (
-                  <li key={id} class="navbar_link">
+                  <li key={id} className="navbar_link">
                     <Link to="/Black-jack-React">{text}</Link>
                   </li>
                 );
               }else {
                 return (
-                  <li key={id} class="navbar_link">
+                  <li key={id} className="navbar_link">
                     <LinkRoll activeClass="active" smooth spy to={text}>
                       <div>{text}</div>
                     </LinkRoll>
