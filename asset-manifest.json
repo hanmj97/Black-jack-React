@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/Black-jack-React/static/css/main.f156d6dc.css",
-    "main.js": "/Black-jack-React/static/js/main.e49cbd88.js",
+    "main.js": "/Black-jack-React/static/js/main.23515dab.js",
     "static/js/787.cacf667e.chunk.js": "/Black-jack-React/static/js/787.cacf667e.chunk.js",
     "static/media/backgroundsound.mp3": "/Black-jack-React/static/media/backgroundsound.d2ee92666b84d85c9859.mp3",
     "static/media/gametable2.jpg": "/Black-jack-React/static/media/gametable2.e1395bdcef99e34420f9.jpg",
@@ -23,11 +23,11 @@
     "static/media/chipsound.mp3": "/Black-jack-React/static/media/chipsound.0fa341aecfb7bb9d095e.mp3",
     "index.html": "/Black-jack-React/index.html",
     "main.f156d6dc.css.map": "/Black-jack-React/static/css/main.f156d6dc.css.map",
-    "main.e49cbd88.js.map": "/Black-jack-React/static/js/main.e49cbd88.js.map",
+    "main.23515dab.js.map": "/Black-jack-React/static/js/main.23515dab.js.map",
     "787.cacf667e.chunk.js.map": "/Black-jack-React/static/js/787.cacf667e.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f156d6dc.css",
-    "static/js/main.e49cbd88.js"
+    "static/js/main.23515dab.js"
   ]
 }
