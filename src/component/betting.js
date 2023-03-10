@@ -12,10 +12,22 @@ import { useNavigate } from 'react-router-dom';
 import backgroundsound from '../soundeffect/backgroundsound.mp3';
 import chipsound from '../soundeffect/chipsound.mp3';
 import AudioPlayer from 'react-h5-audio-player';
+import Modal from 'react-modal';
 
 
 let userid = "";
 let usermoney = 0;
+let rank = [];
+
+Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userrank", {
+    id: sessionStorage.getItem("id"),
+}).then((res) => {
+    rank = res.data;
+    console.log(rank);
+}).catch((e) => {
+    console.error(e);
+});
+
 
 const Game = () => {  
     const urlmove = useNavigate();
@@ -23,6 +35,27 @@ const Game = () => {
     let [fade, setFade] = useState('');
     const [ismoney, setIsmoney] = useState(0);
     var chipaudio = new Audio(chipsound);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+
+    const customStyles = {
+        overlay: {
+            position: 'fixed',
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            zIndex: 500,
+        },
+        content: {
+            width: '30%',
+            height: '50%',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+        }
+
+    }
 
 
     userid = sessionStorage.getItem("id");
@@ -81,6 +114,33 @@ const Game = () => {
                     <a className="bettingtext">Bets : </a>
                     <input type="number" className="perfectbetmoney" id="perfectbetmoney" disabled={true} value={battingmoney} ></input><a className="perfectdallor">$</a>
                     <input type="number" className="bettingmoney" id="bettingmoney" disabled={true} value={battingmoney} ></input><a className="betdallor">$</a>
+                </div>
+
+                <div className="rank_btn">
+                    <button className="gbtn ranks" onClick={() => {
+                        setModalIsOpen(true);
+                    }}>Ranking</button>
+
+                    <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} ariaHideApp={false} style={customStyles}>
+      	                <div className="ranking">
+                            <span className="rank_title">👑 Black-jack Ranking 👑</span>
+                        </div>
+                        <div className="rank_content">
+                            <ul className='rank_link'>
+                                <li className="rank_user">
+                                    <span className="rank_user_id_head">User ID</span><span className="rank_user_usermoney_head">Score</span>
+                                </li>
+                                {rank.map((ranking) => {
+                                    const { userid, usermoney, username } = ranking;
+                                    return (
+                                        <li key={userid} className="rank_user">
+                                            <span className="rank_user_id">{userid}</span><span className="rank_user_usermoney">{usermoney}</span>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+                        </div>
+                    </Modal>
                 </div>
 
                 <div className="chips">
