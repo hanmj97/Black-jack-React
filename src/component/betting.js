@@ -83,6 +83,39 @@ const Game = () => {
     }, []);
 
 
+    const history = createBrowserHistory();                     // 1. history라는 상수에 createBrowerHistory 함수를 할당한다.
+      
+    const preventGoBack = () => {                               // 2. 뒤로가기 막는 함수 설정
+        history.push(null, '', history.location.href);          // 2-1. 현재 상태를 세션 히스토리 스택에 추가(push)한다.
+        const Toast = Swal.mixin({
+            width: 700,
+        });
+
+        Toast.fire({
+            icon: "error",
+            title: "새로고침 혹은 뒤로가기가 감지되어 메인으로 돌아갑니다.",
+        }).then(function(){
+            window.location.replace('/Black-jack-React');
+        });
+    };
+
+    useEffect(() => {
+        (() => {
+            history.push(null, '', history.location.href);                  // 3. 렌더링 완료 시 현재 상태를 세션 히스토리 스택에 추가(push)한다.
+            window.addEventListener('popstate', preventGoBack);             // 3-1. addEventListener를 이용해 "popstate"라는 이벤트를 감지하게 한다.
+                                                                            // 3-2. popstate 이벤트를 감지했을 때 preventGoBack 함수가 실행된다.
+        })();
+      
+        return () => {
+            window.removeEventListener('popstate', preventGoBack);          // 3-3. 렌더링이 끝난 이후엔 eventListner을 제거한다.
+        };
+    }, []);
+      
+    useEffect(() => {
+        history.push(null, '', history.location.href);                      // 4-1. 현재 상태를 세션 히스토리 스택에 추가(push)한다.
+    }, [history.location]);                                                 // 4. history.location (pathname)이 변경될때마다
+
+
     return (
         <div>
             <div className={"tablediv start " + fade}>
