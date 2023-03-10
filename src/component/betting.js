@@ -17,16 +17,6 @@ import Modal from 'react-modal';
 
 let userid = "";
 let usermoney = 0;
-let rank = [];
-
-Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userrank", {
-    id: sessionStorage.getItem("id"),
-}).then((res) => {
-    rank = res.data;
-    console.log(rank);
-}).catch((e) => {
-    console.error(e);
-});
 
 
 const Game = () => {  
@@ -36,6 +26,18 @@ const Game = () => {
     const [ismoney, setIsmoney] = useState(0);
     var chipaudio = new Audio(chipsound);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [rank, setRank] = useState([]);
+
+
+    if(modalIsOpen){
+        Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userrank", {
+            id: sessionStorage.getItem("id"),
+        }).then((res) => {
+            setRank(res.data);
+        }).catch((e) => {
+            console.error(e);
+        });
+    }
 
 
     const customStyles = {
