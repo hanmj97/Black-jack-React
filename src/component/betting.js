@@ -13,6 +13,7 @@ import backgroundsound from '../soundeffect/backgroundsound.mp3';
 import chipsound from '../soundeffect/chipsound.mp3';
 import AudioPlayer from 'react-h5-audio-player';
 import Modal from 'react-modal';
+import { createBrowserHistory } from 'history';
 
 
 let userid = "";
