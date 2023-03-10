@@ -160,11 +160,11 @@ const Game = () => {
                                     });
                                 }
                             }else {
-                                userinsurancelose();
+                                userinsurancelose_nobj();
 
                                 Toast.fire({
                                     icon: 'info',
-                                    title: 'Dealer No BlackJack!!',
+                                    title: 'Dealer No BlackJack.',
                                 });
                             }
                         }else {
@@ -192,7 +192,7 @@ const Game = () => {
                             }else {
                                 Toast.fire({
                                     icon: 'info',
-                                    title: 'Dealer No BlackJack!!',
+                                    title: 'Dealer No BlackJack.',
                                 });
                             }
                         }
@@ -224,7 +224,7 @@ const Game = () => {
                     }else {
                         Toast.fire({
                             icon: 'info',
-                            title: 'Dealer No BlackJack!!',
+                            title: 'Dealer No BlackJack.',
                         });
                     }
                 }, 4000);
@@ -345,6 +345,18 @@ const Game = () => {
     const userinsurancelose = async () => {
         try {
             const response = await Axios.post("http://localhost:8000/userinsurancelose", {
+                userid: location.state.userid,
+                perfectbetsmoney: location.state.perfectbetsmoney,
+                betsmoney: location.state.betsmoney,
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    const userinsurancelose_nobj = async () => {
+        try {
+            const response = await Axios.post("http://localhost:8000/userinsurancelosenobj", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: Number(location.state.betsmoney) / 2,
