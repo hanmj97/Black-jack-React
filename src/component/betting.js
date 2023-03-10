@@ -27,7 +27,7 @@ const Game = () => {
 
     userid = sessionStorage.getItem("id");
 
-    Axios.post("http://localhost:8000/userinfo", {
+    Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userinfo", {
         id: sessionStorage.getItem("id"),
     }).then((res) => {
         usermoney = Number(res.data.usermoney);
@@ -168,7 +168,7 @@ const Game = () => {
                         const perfectElement = document.getElementById('perfectbetmoney');
                         const resultElement = document.getElementById('bettingmoney');
 
-                        Axios.post("http://localhost:8000/betting", {
+                        Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/betting", {
                             betsmoney : Number(resultElement.value) + Number(perfectElement.value),
                             id : sessionStorage.getItem("id"),
                         }).then((res) => {

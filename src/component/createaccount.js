@@ -51,7 +51,7 @@ const Container = () => {
         }
 
 
-        Axios.post("http://localhost:8000/signup", {
+        Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/signup", {
             name: nameRef.current.value,
             id: idRef.current.value,
             pw: pwRef.current.value,
@@ -109,7 +109,7 @@ const Container = () => {
         }
 
 
-        Axios.post("http://localhost:8000/signin", {
+        Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/signin", {
             id: loginidRef.current.value,
             pw: loginpwRef.current.value,
         }).then((res) => {
