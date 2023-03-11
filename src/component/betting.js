@@ -169,11 +169,43 @@ const Game = () => {
                                 </li>
                                 {rank.map((ranking) => {
                                     const { userid, usermoney, username } = ranking;
-                                    return (
-                                        <li key={userid} className="rank_user">
-                                            <span className="rank_user_id">{userid}</span><span className="rank_user_usermoney">{usermoney}</span>
-                                        </li>
-                                    );
+                                    if(usermoney >= 10000000){
+                                        return (
+                                            <li key={userid} className="rank_user">
+                                                <span className="rank_user_id">💎{userid}💎</span><span className="rank_user_usermoney">{usermoney}</span>
+                                            </li>
+                                        );
+                                    }else if(usermoney >= 1000000){
+                                        return (
+                                            <li key={userid} className="rank_user">
+                                                <span className="rank_user_id">🏆{userid}🏆</span><span className="rank_user_usermoney">{usermoney}</span>
+                                            </li>
+                                        );
+                                    }else if(usermoney >= 100000){
+                                        return (
+                                            <li key={userid} className="rank_user">
+                                                <span className="rank_user_id">🥇{userid}🥇</span><span className="rank_user_usermoney">{usermoney}</span>
+                                            </li>
+                                        );
+                                    }else if(usermoney >= 10000){
+                                        return (
+                                            <li key={userid} className="rank_user">
+                                                <span className="rank_user_id">🏅{userid}🏅</span><span className="rank_user_usermoney">{usermoney}</span>
+                                            </li>
+                                        );
+                                    }else if(usermoney >= 1000){
+                                        return (
+                                            <li key={userid} className="rank_user">
+                                                <span className="rank_user_id">💰{userid}💰</span><span className="rank_user_usermoney">{usermoney}</span>
+                                            </li>
+                                        );
+                                    }else {
+                                        return (
+                                            <li key={userid} className="rank_user">
+                                                <span className="rank_user_id">{userid}</span><span className="rank_user_usermoney">{usermoney}</span>
+                                            </li>
+                                        );
+                                    }
                                 })}
                             </ul>
                         </div>
