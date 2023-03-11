@@ -5,6 +5,7 @@ import chip5 from "../chipimg/5_red_chip.png";
 import chip10 from "../chipimg/10_blue_chip.png";
 import chip25 from "../chipimg/25_green_chip.png";
 import chip100 from "../chipimg/100_black_chip.png";
+import chip1000 from "../chipimg/1000_yellow_chip_3d.png";
 import React, { useEffect, useRef, useState } from 'react';
 import Axios from "axios";
 import Swal from "sweetalert2";
@@ -238,6 +239,16 @@ const Game = () => {
 
                         if(Number(perfectElement.value) + Number(resultElement.value) + 100 <= usermoney){
                             resultElement.value = Number(resultElement.value) + 100;
+                        }
+                    }}/>
+                    <img src={chip1000} className="chip1000" onClick={() => {
+                        const perfectElement = document.getElementById('perfectbetmoney');
+                        const resultElement = document.getElementById('bettingmoney');
+
+                        chipaudio.play();
+
+                        if(Number(perfectElement.value) + Number(resultElement.value) + 1000 <= usermoney){
+                            resultElement.value = Number(resultElement.value) + 1000;
                         }
                     }}/>
                 </div>
