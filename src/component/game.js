@@ -534,25 +534,24 @@ const Game = () => {
 
 
     useEffect(() => {                                                              //첫 카드 4장 순차 슬라이드
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'center-center',
-            showConfirmButton: false,
-            timer: 6000,
-            timerProgressBar: true,
-            width: 600,
-        });
-
-        Toast.fire({
-            icon: 'info',
-            title: 'Wait... The dealer is drawing cards.',
-        });
-
         const userInterval = setInterval(() => {
-
             if (count < (usercard_array.length + dealercard_array.length)) {
 
                 if(count === 0){
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'center-center',
+                        showConfirmButton: false,
+                        timer: 6000,
+                        timerProgressBar: true,
+                        width: 600,
+                    });
+            
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Wait... The dealer is drawing cards.',
+                    });
+
                     setIsUserslide([true]);
                 }else if(count === 1){
                     setIsDealerslide([true]);
@@ -560,6 +559,7 @@ const Game = () => {
                     setIsUserslide((data) => [...data, true]);
                 }else if(count === 3){
                     setIsDealerslide((data) => [...data, true]);
+                    clearInterval(userInterval);
                 }
 
                 cardslideaudio.play();
@@ -567,8 +567,6 @@ const Game = () => {
                 count++;
             }
         }, 800);
-
-        return () => clearInterval(userInterval);
     }, [firstcard]);
 
 
@@ -780,9 +778,9 @@ const Game = () => {
             <div className="tablediv">
                 <img src={gametable} className='gametable' alt='gametable' />
 
-                <div className="backsoundbar">
+                {/* <div className="backsoundbar">
                     <AudioPlayer autoPlay src={backgroundsound} loop={true} volume={0.1}/>
-                </div>
+                </div> */}
 
                 <div>
                     {

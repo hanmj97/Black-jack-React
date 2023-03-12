@@ -4,11 +4,32 @@ import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import { faBlog } from "@fortawesome/free-solid-svg-icons";
 import { faInstagramSquare } from "@fortawesome/free-brands-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import backgroundsound from '../soundeffect/backgroundsound.mp3';
+import AudioPlayer from 'react-h5-audio-player';
+import { useLocation } from 'react-router-dom';
+import React, { useEffect, useRef } from "react";
 
 export default function Footer() {
+    const location = useLocation();
+    const audioRef = useRef(null);
+
+    useEffect(() => {
+        if (location.pathname === "/Betting" || location.pathname === "/Game") {
+            audioRef.current.audio.current.play();
+        }else {
+            audioRef.current.audio.current.pause();
+        }
+    }, [location.pathname]);
+
     return (
         <>
             <footer>
+                <div className={`backsoundbar${location.pathname == "/Betting" || location.pathname == "/Game" ? '' : 'none'}`}>
+                    <AudioPlayer /* autoPlay */ src={backgroundsound} loop={true} volume={0.1} ref={audioRef}
+                        // other props here
+                    />
+                </div>
+
                 <div className="footer-content">
                     <h3>Black-Jack Game</h3>
                     <p>This page is a blackjack game page that I made using REACT because I was bored. The source code on this page can be found in the Github link below.</p>

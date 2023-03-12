@@ -29,7 +29,7 @@ const Game = () => {
     var chipaudio = new Audio(chipsound);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [rank, setRank] = useState([]);
-
+    
 
     if(modalIsOpen){
         Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userrank", {
@@ -124,11 +124,11 @@ const Game = () => {
                 <img src={gametable} className='gametable' alt='gametable' />
 
 
-                <div className="backsoundbar">
-                    <AudioPlayer autoPlay src={backgroundsound} /* onPlay={e => console.log("onPlay")} */ loop={true} volume={0.1}
+                {/* <div className="backsoundbar">
+                    <AudioPlayer autoPlay src={backgroundsound} loop={true} volume={0.1}
                         // other props here
                     />
-                </div>
+                </div> */}
     
                 <div className="delercard1">
                     <img src={nocard} className="testcard"/>

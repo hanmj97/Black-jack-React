@@ -535,10 +535,20 @@
   }
 
   .backsoundbar {
-    position: absolute;
+    position: fixed;
     z-index: 100;
     left: 1%;
-    top: 90%;
+    bottom: 0;
+    width: 25%;
+    background-color: #00000000;
+  }
+
+  .backsoundbarnone{
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 1%;
+    bottom: 0;
     width: 25%;
     background-color: #00000000;
   }
@@ -3725,7 +3735,7 @@
 
   .rhap_main-controls-button {
     margin: 0 3px;
-    color: #ffffffb4;
+    color: #424242;
     font-size: 35px;
     width: 35px;
     height: 35px;
