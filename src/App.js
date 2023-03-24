@@ -1,5 +1,6 @@
 import Header from "./component/header.js";
 import Footer from "./component/footer.js";
+import MFooter from "./component/mobilefooter.js";
 import {Mobile, PC} from "./component/pcormobile.js";
 import Navbar from "./component/navbar.js";
 import MNavbar from "./component/mobilenavbar.js";
@@ -51,7 +52,7 @@ const loginOk = (fade) => {
             <Route path="/Betting" element={<Betting></Betting>}></Route>
           </Routes>
 
-          <Footer></Footer>
+          <MFooter></MFooter>
         </Mobile>
 
         <PC>
@@ -90,7 +91,7 @@ const loginNo = (fade) => {
             <Route path="/Betting" element={<Betting></Betting>}></Route>
           </Routes>
 
-          <Footer></Footer>
+          <MFooter></MFooter>
         </Mobile>
 
         <PC>

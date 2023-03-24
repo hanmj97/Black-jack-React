@@ -780,10 +780,6 @@ const Game = () => {
             <div className="tablediv">
                 <img src={gametable} className='gametable' alt='gametable' />
 
-                <div className="backsoundbar">
-                    <AudioPlayer autoPlay src={backgroundsound} loop={true} volume={0.1}/>
-                </div>
-
                 <div>
                     {
                         dealercard_array.map((card, index) => {
