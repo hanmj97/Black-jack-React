@@ -36,6 +36,19 @@ const Game = () => {
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [isdoubledown, setIsdoubledown] = useState(false);
 
+    const [width, setWidth] = useState(window.innerWidth);
+
+    const handleResize = () => {
+        setWidth(window.innerWidth);
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize);
+        return () => {
+            // cleanup
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     useEffect(() => {                                       //랜더링 후 버튼 6초 비활성화
         const timer = setTimeout(() => {
@@ -46,6 +59,25 @@ const Game = () => {
             clearTimeout(timer);
         };
     }, []);
+
+    useEffect(() => {
+        if(width > 766){
+            const Toast = Swal.mixin({
+                width: 900,
+            })
+            
+            Toast.fire({
+                icon: "error",
+                title: "화면 전환이 감지되어 메인으로 돌아갑니다.",
+            }).then(function(){
+                
+            });
+
+            const timer = setTimeout(() => {
+                window.location.replace('/Black-jack-React');
+            }, 2000);
+        }
+    }, [width]);
 
 
     const first_user_blackjack = () => {
