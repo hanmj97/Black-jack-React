@@ -340,7 +340,7 @@ const Game = () => {
         
                                     Toast.fire({
                                         icon: 'warning',
-                                        title: '베팅한 금액이 최소 베팅금액보다 적습니다.',
+                                        title: '베팅한 금액이 최소 베팅금액보다 적습니다. <br/> (최소베팅금액 : 10$)',
                                     });
                                 }else {
                                     const perfectElement = document.getElementById('perfectbetmoney');

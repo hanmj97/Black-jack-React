@@ -9,13 +9,21 @@ import AudioPlayer from 'react-h5-audio-player';
 import { useLocation } from 'react-router-dom';
 import React, { useEffect, useRef } from "react";
 
+let playmusic = true;
+
 export default function Footer() {
     const location = useLocation();
     const audioRef = useRef(null);
 
     useEffect(() => {
         if (location.pathname === "/Betting" || location.pathname === "/Game") {
-            audioRef.current.audio.current.play();
+            if(playmusic){
+                audioRef.current.audio.current.play();
+
+                playmusic = false;
+            }else {
+                
+            }
         }else {
             audioRef.current.audio.current.pause();
         }
@@ -25,7 +33,7 @@ export default function Footer() {
         <>
             <footer>
                 <div className={`backsoundbar${location.pathname == "/Betting" || location.pathname == "/Game" ? '' : 'none'}`}>
-                    <AudioPlayer /* autoPlay */ src={backgroundsound} loop={true} volume={0.1} ref={audioRef}
+                    <AudioPlayer autoPlay={true} src={backgroundsound} loop={true} volume={0.1} ref={audioRef}
                         // other props here
                     />
                 </div>
