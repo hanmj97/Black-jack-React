@@ -4,17 +4,13 @@ import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
 
 const Container = () => {  
-    const [formClass, setFormClass] = useState("");
+    const [formClass, setFormClass] = useState("right-panel-active");
     const loginidRef = useRef();
     const loginpwRef = useRef();
     const nameRef = useRef();
     const idRef = useRef();
     const pwRef = useRef();
     const urlmove = useNavigate();
-
-    useEffect(()=>{
-        setFormClass("right-panel-active");
-    });
 
     const click_signInBtn = () => {
         setFormClass("");
