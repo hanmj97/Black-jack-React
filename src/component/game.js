@@ -203,6 +203,12 @@ const Game = () => {
                                     icon: 'info',
                                     title: 'Dealer No BlackJack.',
                                 });
+
+                                let firstperfectpair = setTimeout(()=>{
+                                    if(response.data[0].cardnum == response.data[2].cardnum && response.data[0].cardpattern == response.data[2].cardpattern && response.data[0].cardimg == response.data[2].cardimg){
+                                        first_perfectpair();
+                                    }
+                                }, 3000);
                             }
                         }else {
                             if(response.data[1].cardnum == 10){
@@ -231,6 +237,12 @@ const Game = () => {
                                     icon: 'info',
                                     title: 'Dealer No BlackJack.',
                                 });
+
+                                let firstperfectpair = setTimeout(()=>{
+                                    if(response.data[0].cardnum == response.data[2].cardnum && response.data[0].cardpattern == response.data[2].cardpattern && response.data[0].cardimg == response.data[2].cardimg){
+                                        first_perfectpair();
+                                    }
+                                }, 3000);
                             }
                         }
                     });
@@ -263,13 +275,19 @@ const Game = () => {
                             icon: 'info',
                             title: 'Dealer No BlackJack.',
                         });
+
+                        let firstperfectpair = setTimeout(()=>{
+                            if(response.data[0].cardnum == response.data[2].cardnum && response.data[0].cardpattern == response.data[2].cardpattern && response.data[0].cardimg == response.data[2].cardimg){
+                                first_perfectpair();
+                            }
+                        }, 3000);
                     }
                 }, 4000);
             }
 
-            if(response.data[0].cardnum == response.data[2].cardnum && response.data[0].cardpattern == response.data[2].cardpattern && response.data[0].cardimg == response.data[2].cardimg){
+            /* if(response.data[0].cardnum == response.data[2].cardnum && response.data[0].cardpattern == response.data[2].cardpattern && response.data[0].cardimg == response.data[2].cardimg){
                 first_perfectpair();
-            }
+            } */
         } catch(err) {
           console.error(err);
         }
@@ -458,6 +476,8 @@ const Game = () => {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
             });
+
+
         } catch(err) {
             console.error(err);
         }
