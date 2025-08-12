@@ -1,40 +1,22 @@
-﻿import express from 'express';
+﻿// server/src/index.js
+import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
-import pool from './db.js';
 import usersRouter from './routes/users.js';
 
-dotenv.config();
 const app = express();
-const allowed = (process.env.CORS_ORIGINS || 'https://hanmj97.github.io').split(',');
 
+// ★ CORS: 프리플라이트(OPTIONS)까지 허용
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin) return cb(null, true);
-    try {
-      const u = new URL(origin);
-      if (allowed.includes(origin) || /\.cloudtype\.app$/i.test(u.hostname)) return cb(null, true);
-    } catch {}
-    return cb(null, false);
-  }
+  origin: ['http://localhost:3000', 'https://hanmj97.github.io'],
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: true
 }));
-app.use(helmet());
+app.options('*', cors());
+
+// JSON 파서 및 라우터
 app.use(express.json());
-app.use(morgan('dev'));
-
-app.get('/health', async (req, res) => {
-  try {
-    const [rows] = await pool.query('SELECT 1 AS ok');
-    res.json({ ok: true, db: rows[0].ok === 1 });
-  } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
-  }
-});
-
-app.use('/api/users', usersRouter);
-app.use((req, res) => res.status(404).json({ error: 'Not Found' }));
+app.use('/', usersRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`API listening on :${PORT}`));
