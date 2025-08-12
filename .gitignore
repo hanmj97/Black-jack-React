@@ -35,9 +35,7 @@ build/
 coverage/
 
 # Env
-.env
 .env.*
-server/.env
 
 # OS/IDE
 .DS_Store
