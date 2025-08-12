@@ -1,4 +1,4 @@
-﻿// server/src/routes/users.js
+﻿// server/src/routes/user.js
 import { Router } from 'express';
 import pool from '../db.js';
 
@@ -130,13 +130,13 @@ async function addMoney(userid, amount) {
   if (amount < 0) {
     const abs = Math.abs(amount);
     const [r] = await pool.execute(
-      'UPDATE users SET usermoney = usermoney - ? WHERE userid = ? AND usermoney >= ?',
+      'UPDATE user SET usermoney = usermoney - ? WHERE userid = ? AND usermoney >= ?',
       [abs, userid, abs]
     );
     return r.affectedRows === 1;
   } else {
     const [r] = await pool.execute(
-      'UPDATE users SET usermoney = usermoney + ? WHERE userid = ?',
+      'UPDATE user SET usermoney = usermoney + ? WHERE userid = ?',
       [amount, userid]
     );
     return r.affectedRows === 1;
@@ -145,7 +145,7 @@ async function addMoney(userid, amount) {
 
 async function getMoney(userid) {
   const [rows] = await pool.execute(
-    'SELECT usermoney FROM users WHERE userid = ? LIMIT 1',
+    'SELECT usermoney FROM user WHERE userid = ? LIMIT 1',
     [userid]
   );
   if (!rows.length) return null;
@@ -167,7 +167,7 @@ router.post('/signup', async (req, res) => {
   try {
     // 2) 삽입 시도
     const [result] = await pool.execute(
-      'INSERT INTO users (userid, username, password) VALUES (?, ?, ?)',
+      'INSERT INTO user (userid, username, password) VALUES (?, ?, ?)',
       [id, name, pw]
     );
 
@@ -194,7 +194,7 @@ router.post('/signin', async (req, res) => {
     const { id, pw } = req.body || {};
     if (!id || !pw) return res.json({ affectedRows: 0, error: 'missing fields' });
     const [rows] = await pool.execute(
-      'SELECT username AS username, usermoney AS usermoney FROM users WHERE userid = ? AND password = ? LIMIT 1',
+      'SELECT username AS username, usermoney AS usermoney FROM user WHERE userid = ? AND password = ? LIMIT 1',
       [id, pw]
     );
     if (rows.length) return res.json({ affectedRows: 1, username: rows[0].username, usermoney: rows[0].usermoney });
@@ -209,7 +209,7 @@ router.post('/userinfo', async (req, res) => {
     const { id } = req.body || {};
     if (!id) return res.status(400).json({ error: 'missing id' });
     const [rows] = await pool.execute(
-      'SELECT userid, username, usermoney FROM users WHERE userid = ? LIMIT 1',
+      'SELECT userid, username, usermoney FROM user WHERE userid = ? LIMIT 1',
       [id]
     );
     if (!rows.length) return res.status(404).json({ error: 'not found' });
@@ -222,7 +222,7 @@ router.post('/userinfo', async (req, res) => {
 router.post('/userrank', async (_req, res) => {
   try {
     const [rows] = await pool.execute(
-      'SELECT userid, username, usermoney FROM users ORDER BY usermoney DESC LIMIT 50'
+      'SELECT userid, username, usermoney FROM user ORDER BY usermoney DESC LIMIT 50'
     );
     res.json(rows);
   } catch (err) {
@@ -313,7 +313,7 @@ async function handleStart(req, res) {
         const ok = await addMoney(id, -sess.sideBet);
         if (!ok) {
           // 잔액 부족이면 0으로 만들고 진행
-          await pool.execute('UPDATE users SET usermoney = 0 WHERE userid = ?', [id]);
+          await pool.execute('UPDATE user SET usermoney = 0 WHERE userid = ?', [id]);
         }
         sess.sideBetResult = { ok: false, payout: 0 };
       }
