@@ -167,7 +167,7 @@ router.post('/signup', async (req, res) => {
   try {
     // 2) 삽입 시도
     const [result] = await pool.execute(
-      'INSERT INTO user (userid, username, password) VALUES (?, ?, ?)',
+      'INSERT INTO user (userid, username, userpw) VALUES (?, ?, ?)',
       [id, name, pw]
     );
 
@@ -194,7 +194,7 @@ router.post('/signin', async (req, res) => {
     const { id, pw } = req.body || {};
     if (!id || !pw) return res.json({ affectedRows: 0, error: 'missing fields' });
     const [rows] = await pool.execute(
-      'SELECT username AS username, usermoney AS usermoney FROM user WHERE userid = ? AND password = ? LIMIT 1',
+      'SELECT username AS username, usermoney AS usermoney FROM user WHERE userid = ? AND userpw = ? LIMIT 1',
       [id, pw]
     );
     if (rows.length) return res.json({ affectedRows: 1, username: rows[0].username, usermoney: rows[0].usermoney });
