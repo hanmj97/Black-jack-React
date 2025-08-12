@@ -1601,6 +1601,7 @@
     width: 60%;
     margin: 40px auto;
     text-align: center;
+    white-space: nowrap;
   }
 
   .custom-btn {
