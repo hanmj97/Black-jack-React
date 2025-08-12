@@ -32,7 +32,7 @@ const Game = () => {
     
 
     if(modalIsOpen){
-        Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userrank", {
+        Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userrank", {
             id: sessionStorage.getItem("id"),
         }).then((res) => {
             setRank(res.data);
@@ -64,7 +64,7 @@ const Game = () => {
 
     userid = sessionStorage.getItem("id");
 
-    Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userinfo", {
+    Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userinfo", {
         id: sessionStorage.getItem("id"),
     }).then((res) => {
         usermoney = Number(res.data.usermoney);
@@ -307,7 +307,7 @@ const Game = () => {
                         const perfectElement = document.getElementById('perfectbetmoney');
                         const resultElement = document.getElementById('bettingmoney');
 
-                        Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/betting", {
+                        Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/betting", {
                             betsmoney : Number(resultElement.value) + Number(perfectElement.value),
                             id : sessionStorage.getItem("id"),
                         }).then((res) => {

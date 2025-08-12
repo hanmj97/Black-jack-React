@@ -113,7 +113,7 @@ const Game = () => {
 
     const randomcard = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/randomcard", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/randomcard", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -295,7 +295,7 @@ const Game = () => {
 
     const handleHit = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/hit", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/hit", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -315,7 +315,7 @@ const Game = () => {
 
     const handleStand = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/stand", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/stand", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -340,7 +340,7 @@ const Game = () => {
 
     const handleDoubledown = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/doubledown", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/doubledown", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -363,7 +363,7 @@ const Game = () => {
 
     const userwin = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userwin", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userwin", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -375,7 +375,7 @@ const Game = () => {
 
     const userdoubledownwin = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userdoublewin", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userdoublewin", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -387,7 +387,7 @@ const Game = () => {
 
     const userdoubledownlose = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userdoublelose", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userdoublelose", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -399,7 +399,7 @@ const Game = () => {
 
     const userinsurancelose = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userinsurancelose", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userinsurancelose", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -411,7 +411,7 @@ const Game = () => {
 
     const userinsurancelose_nobj = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userinsurancelosenobj", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userinsurancelosenobj", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: Number(location.state.betsmoney) / 2,
@@ -423,7 +423,7 @@ const Game = () => {
 
     const userdraw = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userdraw", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userdraw", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -435,7 +435,7 @@ const Game = () => {
 
     const userblackjack = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userblackjack", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userblackjack", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
                 betsmoney: location.state.betsmoney,
@@ -472,7 +472,7 @@ const Game = () => {
 
     const userperfectbet = async () => {
         try {
-            const response = await Axios.post("https://port-0-black-jack-react-server-p8xrq2mleyd78ib.sel3.cloudtype.app/userperfectbet", {
+            const response = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userperfectbet", {
                 userid: location.state.userid,
                 perfectbetsmoney: location.state.perfectbetsmoney,
             });
