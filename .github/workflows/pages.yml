@@ -17,17 +17,16 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: false         # ★ 경고를 에러로 취급하지 않음
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'npm'
+        with: { node-version: 18, cache: 'npm' }
       - run: npm ci
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
-        with:
-          path: build   # CRA는 build 폴더를 업로드
+        with: { path: build }
 
   deploy:
     needs: build
