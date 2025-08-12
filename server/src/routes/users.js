@@ -155,17 +155,37 @@ async function getMoney(userid) {
 /* ========================== 기존 API (회원/로그인/유저/랭킹/배팅) ========================== */
 
 router.post('/signup', async (req, res) => {
+  const { name, id, pw } = req.body || {};
+
+  // 1) 파라미터 검증
+  if (!name || !id || !pw) {
+    return res
+      .status(400)
+      .json({ ok: false, code: 'BAD_REQUEST', message: 'name, id, pw는 필수입니다.' });
+  }
+
   try {
-    const { name, id, pw } = req.body || {};
-    if (!name || !id || !pw) return res.json({ affectedRows: 0, error: 'missing fields' });
+    // 2) 삽입 시도
     const [result] = await pool.execute(
       'INSERT INTO users (userid, username, password) VALUES (?, ?, ?)',
       [id, name, pw]
     );
-    res.json({ affectedRows: result.affectedRows });
+
+    // 3) 성공
+    return res.status(201).json({ ok: true, affectedRows: result.affectedRows });
   } catch (err) {
-    if (err?.code === 'ER_DUP_ENTRY') return res.json({ affectedRows: 0, error: 'duplicate' });
-    res.json({ affectedRows: 0, error: err.message });
+    // 4) 중복 키 에러만 409로 구분
+    if (err?.code === 'ER_DUP_ENTRY') {
+      return res
+        .status(409)
+        .json({ ok: false, code: 'DUPLICATE', message: '이미 존재하는 아이디입니다.' });
+    }
+
+    // 5) 그 외 서버 에러
+    console.error('[SIGNUP] error:', err);
+    return res
+      .status(500)
+      .json({ ok: false, code: 'SERVER_ERROR', message: '서버 오류가 발생했습니다.' });
   }
 });
 
