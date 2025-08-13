@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
 import { useNavigate } from 'react-router-dom';
 
-const navigate = useNavigate();
-
 export default function Header(props) {
+    const navigate = useNavigate();
+
     return (
         <>
         <div className="wrapper01"></div>
