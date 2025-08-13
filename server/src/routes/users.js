@@ -269,11 +269,14 @@ function rankToNum(rank) {
   return parseInt(rank, 10);
 }
 function mapToImgPath({ suit, rank }) {
-  // ⚠️ 프론트의 카드 이미지 파일명 규칙에 맞춰 필요 시 수정
-  // 예) '/cardimg/S_A.png' 또는 '/cardimg/SA.png' 등
-  // 아래는 예시: 'S_A.png' 형식
-  const r = rank === '10' ? '10' : rank; // '10' 유지
-  return `/cardimg/${suit}_${r}.png`;
+  const s = suitWord(suit);
+  if (rank === 'A') return `/cardimg/1_ace_of_${s}.png`;
+  if (rank === 'J') return `/cardimg/10_jack_of_${s}.png`;
+  if (rank === 'Q') return `/cardimg/10_queen_of_${s}.png`;
+  if (rank === 'K') return `/cardimg/10_king_of_${s}.png`;
+  if (rank === '10') return `/cardimg/10_of_${s}.png`;
+  // 2~9
+  return `/cardimg/${rank}_of_${s}.png`;
 }
 function toLegacyCard(c) {
   return {
