@@ -29,8 +29,8 @@ const Game = () => {
     var chipaudio = new Audio(chipsound);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [rank, setRank] = useState([]);
+    const [isDealDisabled, setDealDisabled] = useState(false); // Deal lock
     
-
     if(modalIsOpen){
         Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userrank", {
             id: sessionStorage.getItem("id"),
@@ -40,7 +40,6 @@ const Game = () => {
             console.error(e);
         });
     }
-
 
     const customStyles = {
         overlay: {
@@ -61,7 +60,6 @@ const Game = () => {
 
     }
 
-
     userid = sessionStorage.getItem("id");
 
     Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/userinfo", {
@@ -75,20 +73,18 @@ const Game = () => {
 
 
     useEffect(() => {
-        // tab의 상태가 변할때 (클릭 후 다른탭 열리면) 0.1초 뒤 'end' className 바인딩
         const fadeTimer = setTimeout(()=>{ setFade('end') }, 100)
         return () => {
-            // 기존 fadeTimer 제거 후 class 빈 값으로 변경
             clearTimeout(fadeTimer);
   	        setFade('');
         }
     }, []);
 
 
-    const history = createBrowserHistory();                     // 1. history라는 상수에 createBrowerHistory 함수를 할당한다.
+    const history = createBrowserHistory();
       
-    const preventGoBack = () => {                               // 2. 뒤로가기 막는 함수 설정
-        history.push(null, '', history.location.href);          // 2-1. 현재 상태를 세션 히스토리 스택에 추가(push)한다.
+    const preventGoBack = () => {
+        history.push(null, '', history.location.href);
         const Toast = Swal.mixin({
             width: 700,
         });
@@ -103,19 +99,115 @@ const Game = () => {
 
     useEffect(() => {
         (() => {
-            history.push(null, '', history.location.href);                  // 3. 렌더링 완료 시 현재 상태를 세션 히스토리 스택에 추가(push)한다.
-            window.addEventListener('popstate', preventGoBack);             // 3-1. addEventListener를 이용해 "popstate"라는 이벤트를 감지하게 한다.
-                                                                            // 3-2. popstate 이벤트를 감지했을 때 preventGoBack 함수가 실행된다.
+            history.push(null, '', history.location.href);
+            window.addEventListener('popstate', preventGoBack);
         })();
       
         return () => {
-            window.removeEventListener('popstate', preventGoBack);          // 3-3. 렌더링이 끝난 이후엔 eventListner을 제거한다.
+            window.removeEventListener('popstate', preventGoBack);
         };
     }, []);
       
     useEffect(() => {
-        history.push(null, '', history.location.href);                      // 4-1. 현재 상태를 세션 히스토리 스택에 추가(push)한다.
-    }, [history.location]);                                                 // 4. history.location (pathname)이 변경될때마다
+        history.push(null, '', history.location.href);
+    }, [history.location]);
+
+
+    // Deal 클릭: DB 차감은 "확인" 이후에만!
+    const handleDealClick = async (e) => {
+        e.preventDefault();
+        if (isDealDisabled) return;
+        setDealDisabled(true);
+
+        const perfectElement = document.getElementById('perfectbetmoney');
+        const resultElement  = document.getElementById('bettingmoney');
+        const perfect = Number(perfectElement.value || 0);
+        const mainBet = Number(resultElement.value || 0);
+        const totalBet = perfect + mainBet;
+
+        // 1) 로컬 검증 (서버 차감 전)
+        if (usermoney < 9) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'center-center',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                width: 500,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            await Toast.fire({
+                icon: 'error',
+                title: '가진 돈이 최소 베팅금액보다 적습니다.',
+            });
+            urlmove('/Black-jack-React'); // 이동
+            return; // 이동하므로 해제 불필요
+        }
+
+        if (usermoney >= 10 && mainBet < 10) {
+            await Swal.fire({
+                icon: 'warning',
+                width: 800,
+                title: '베팅한 금액이 최소 베팅금액보다 적습니다. <br/> (최소베팅금액 : 10$)',
+            });
+            setDealDisabled(false);
+            return;
+        }
+
+        // 2) 사용자 확인 (이 시점에는 DB 차감 안함)
+        const result = await Swal.fire({
+            icon: 'info',
+            title: '게임을 시작하시겠습니까? <br/> (게임시작 후 새로고침이나 뒤로가기 시 게임이 중단됩니다.)',
+            width: 1000,
+            showCancelButton: true,
+            confirmButtonText: '시작',
+            cancelButtonText: '취소',
+        });
+
+        if (!result.isConfirmed) {
+            setDealDisabled(false);
+            return;
+        }
+
+        // 3) 확인한 경우에만 DB 차감 호출
+        try {
+            const res = await Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/betting", {
+                betsmoney : totalBet,
+                id : sessionStorage.getItem("id"),
+            });
+
+            if (res.data.betting === "finish") {
+                // 성공 시 게임 화면으로 이동
+                urlmove('/Game', {
+                    state: {
+                        userid: userid,
+                        perfectbetsmoney: perfect, 
+                        betsmoney: mainBet, 
+                        resultmoney: Number(usermoney) - totalBet,
+                    }
+                });
+                // 이동이므로 해제 불필요
+            } else {
+                await Swal.fire({
+                    icon: 'warning',
+                    width: 500,
+                    title: '베팅에 실패하였습니다.',
+                });
+                setDealDisabled(false);
+            }
+        } catch (err) {
+            console.error(err);
+            await Swal.fire({
+                icon: 'error',
+                title: '서버 통신 중 오류가 발생했습니다.',
+                text: '잠시 후 다시 시도해주세요.'
+            });
+            setDealDisabled(false);
+        }
+    };
 
 
     return (
@@ -123,25 +215,22 @@ const Game = () => {
             <div className={"tablediv start " + fade}>
                 <img src={gametable} className='gametable' alt='gametable' />
 
-
                 {/* <div className="backsoundbar">
-                    <AudioPlayer autoPlay src={backgroundsound} loop={true} volume={0.1}
-                        // other props here
-                    />
+                    <AudioPlayer autoPlay src={backgroundsound} loop={true} volume={0.1} />
                 </div> */}
     
                 <div className="delercard1">
-                    <img src={nocard} className="testcard"/>
+                    <img src={nocard} className="testcard" alt="card"/>
                 </div>
                 <div className="delercard2">
-                    <img src={nocard} className="testcard2"/>
+                    <img src={nocard} className="testcard2" alt="card"/>
                 </div>
 
                 <div className="usercard">
-                    <img src={nocard} className="testcard"/>
+                    <img src={nocard} className="testcard" alt="card"/>
                 </div>
                 <div className="usercard2">
-                    <img src={nocard} className="testcard2"/>
+                    <img src={nocard} className="testcard2" alt="card"/>
                 </div>
 
                 <div className="usermoney">bankroll : {usermoney}</div>
@@ -301,86 +390,15 @@ const Game = () => {
                             resultElement.value = 0;
                         }
                     }}>Perfect Pair Bets</button>
-                    <button className="gbtn finbats" onClick={(e) =>  {
-                        e.preventDefault();
 
-                        const perfectElement = document.getElementById('perfectbetmoney');
-                        const resultElement = document.getElementById('bettingmoney');
-
-                        Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/betting", {
-                            betsmoney : Number(resultElement.value) + Number(perfectElement.value),
-                            id : sessionStorage.getItem("id"),
-                        }).then((res) => {
-                            if(res.data.betting === "finish"){
-
-                                if(usermoney < 9){
-                                    const Toast = Swal.mixin({
-                                        toast: true,
-                                        position: 'center-center',
-                                        showConfirmButton: false,
-                                        timer: 3000,
-                                        timerProgressBar: true,
-                                        width: 500,
-                                        didOpen: (toast) => {
-                                          toast.addEventListener('mouseenter', Swal.stopTimer)
-                                          toast.addEventListener('mouseleave', Swal.resumeTimer)
-                                        }
-                                    })
-                    
-                                    Toast.fire({
-                                        icon: 'error',
-                                        title: '가진 돈이 최소 베팅금액보다 적습니다.',
-                                    }).then(function(){
-                                        urlmove('/Black-jack-React');
-                                    });
-                                }else if(usermoney >= 10 && resultElement.value < 10){
-                                    const Toast = Swal.mixin({
-                                        width: 800,
-                                    })
-        
-                                    Toast.fire({
-                                        icon: 'warning',
-                                        title: '베팅한 금액이 최소 베팅금액보다 적습니다. <br/> (최소베팅금액 : 10$)',
-                                    });
-                                }else {
-                                    const perfectElement = document.getElementById('perfectbetmoney');
-                                    const resultElement = document.getElementById('bettingmoney');
-                                    
-                                    const Toast = Swal.mixin({
-                                        width: 1000,
-                                    });
-                            
-                                    Toast.fire({
-                                        icon: 'info',
-                                        title: '게임을 시작하시겠습니까? <br/> (게임시작 후 새로고침이나 뒤로가기 시 게임이 중단됩니다.)',
-                                    }).then(result => {
-                                        if (result.isConfirmed) {
-                                            urlmove('/Game', {
-                                                state: {
-                                                    userid: userid,
-                                                    perfectbetsmoney: Number(perfectElement.value), 
-                                                    betsmoney: Number(resultElement.value), 
-                                                    resultmoney: Number(usermoney) - (Number(resultElement.value) + Number(perfectElement.value)),
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            } else {
-                                const Toast = Swal.mixin({
-                                    width: 500,
-                                })
-    
-                                Toast.fire({
-                                    icon: 'warning',
-                                    title: '베팅에 실패하였습니다.',
-                                });
-                            }
-                        }).catch((e) => {
-                            console.error(e);
-                        });
-
-                    }}>Deal</button>
+                    <button
+                        className="gbtn finbats"
+                        onClick={handleDealClick}
+                        disabled={isDealDisabled}
+                        aria-busy={isDealDisabled}
+                    >
+                        {isDealDisabled ? '처리중…' : 'Deal'}
+                    </button>
                 </div>
             </div>
         </div>
