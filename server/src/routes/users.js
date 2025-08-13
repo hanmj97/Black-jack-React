@@ -257,377 +257,291 @@ router.post('/betting', async (req, res) => {
 
 /* ========================== 게임 API ========================== */
 /**
- * 시작/딜: /game/start, /start, /deal  (동일)
- * body: { id, bet, sideBet }  ➜ bet은 정보용(정산은 /betting에서 이미 차감)
- * sideBet(퍼펙트페어) 선택 시: 성공 30배 지급, 실패 몰수(여기서 정산)
+ * 프론트가 기대하는 카드 포맷:
+ * { cardnum: number(1~10), cardpattern: 'S'|'H'|'D'|'C', cardimg: '/cardimg/<파일명>.png' }
+ *  - A는 cardnum=1, J/Q/K는 10
+ *  - 이미지 파일명은 프로젝트에 맞게 아래 mapToImgPath를 필요 시 조정하세요.
  */
-async function handleStart(req, res) {
-  try {
-    const { id, bet, sideBet = 0 } = req.body || {};
-    if (!id) return res.status(400).json({ error: 'missing id' });
-    const sess = getSession(id);
 
+function rankToNum(rank) {
+  if (rank === 'A') return 1;
+  if (['K','Q','J','10'].includes(rank)) return 10;
+  return parseInt(rank, 10);
+}
+function mapToImgPath({ suit, rank }) {
+  // ⚠️ 프론트의 카드 이미지 파일명 규칙에 맞춰 필요 시 수정
+  // 예) '/cardimg/S_A.png' 또는 '/cardimg/SA.png' 등
+  // 아래는 예시: 'S_A.png' 형식
+  const r = rank === '10' ? '10' : rank; // '10' 유지
+  return `/cardimg/${suit}_${r}.png`;
+}
+function toLegacyCard(c) {
+  return {
+    cardnum: rankToNum(c.rank),
+    cardpattern: c.suit,        // 'S','H','D','C'
+    cardimg: mapToImgPath(c)
+  };
+}
+
+// 프론트용 세션 상태 (클라이언트 계산과 최대한 맞춤)
+const LEGACY = new Map(); // key: userid, value: { player:[], dealer:[], doubledown:false }
+
+function getLegacy(userid) {
+  if (!LEGACY.has(userid)) {
+    LEGACY.set(userid, { player: [], dealer: [], doubledown: false });
+  }
+  return LEGACY.get(userid);
+}
+function resetLegacy(userid) {
+  LEGACY.set(userid, { player: [], dealer: [], doubledown: false });
+}
+
+/** 합계 계산(A=1, 필요 시 +10) */
+function legacyScore(cards) {
+  let sum = 0, aces = 0;
+  for (const c of cards) {
+    const n = rankToNum(c.rank);
+    sum += n;
+    if (n === 1) aces++;
+  }
+  // A가 있고 10을 더해도 21 이하이면 10 추가(소프트 처리)
+  if (aces > 0 && sum <= 11) sum += 10;
+  return sum;
+}
+
+/**
+ * POST /randomcard
+ * body: { userid, perfectbetsmoney, betsmoney }
+ * 응답: [ user1, dealer1(+insurance?), user2, dealer2 ]  (각각 toLegacyCard 형태)
+ */
+router.post('/randomcard', async (req, res) => {
+  try {
+    const { userid } = req.body || {};
+    if (!userid) return res.status(400).send('missing userid');
+
+    const sess = getSession(userid);
     // 새 라운드 초기화
     sess.status = 'active';
     sess.activeHand = 0;
     sess.hands = [];
     sess.dealer = { cards: [] };
-    sess.baseBet = Number(bet) || 0;
+    sess.baseBet = 0;
     sess.insuranceAvailable = false;
     sess.insuranceTaken = false;
     sess.insuranceBet = 0;
-    sess.sideBet = Number(sideBet) || 0;
+    sess.sideBet = 0;
     sess.sideBetResult = null;
 
-    // 필요시 새 슈
+    // 슈 준비
     if (!sess.shoe || sess.shoeIdx >= sess.shoe.length) {
       sess.shoe = buildShoe(6);
       sess.shoeIdx = 0;
       sess.pendingReshoe = false;
     }
 
-    // 카드 배분: P,P,D,D (딜러 2번째는 홀카드)
-    const p1 = [drawCard(sess), drawCard(sess)];
-    const d1 = [drawCard(sess), drawCard(sess)];
+    // 배분: P,P,D,D (프론트 로직에 맞춰 user1, dealer1, user2, dealer2 순서로 돌려줌)
+    const u1 = drawCard(sess);
+    const d1 = drawCard(sess);
+    const u2 = drawCard(sess);
+    const d2 = drawCard(sess);
 
-    // 초기 핸드/딜러 셋업
-    const ps = handScore(p1);
-    const ds = handScore(d1);
+    // 서버 엔진 쪽도 동기화(기본 한 손)
     sess.hands.push({
-      cards: p1,
-      bet: Math.max(10, sess.baseBet), // 안전망
+      cards: [u1, u2],
+      bet: 0,
       finished: false,
-      bust: ps.isBust,
-      blackjack: ps.isBlackjack,
+      bust: false,
+      blackjack: false,
       doubled: false
     });
-    sess.dealer.cards = d1;
+    sess.dealer.cards = [d1, d2];
 
-    // 퍼펙트 페어 사이드 정산
-    if (sess.sideBet > 0) {
-      if (isPerfectPair(p1)) {
-        await addMoney(id, sess.sideBet * 30);
-        sess.sideBetResult = { ok: true, payout: sess.sideBet * 30 };
-      } else {
-        // 실패 → 몰수 (이미 차감했으면 건드릴 필요 없지만, 여기선 sideBet은 별도라서 지금 차감)
-        const ok = await addMoney(id, -sess.sideBet);
-        if (!ok) {
-          // 잔액 부족이면 0으로 만들고 진행
-          await pool.execute('UPDATE user SET usermoney = 0 WHERE userid = ?', [id]);
-        }
-        sess.sideBetResult = { ok: false, payout: 0 };
-      }
-    }
+    // 프론트용 별도 메모리도 동기화
+    resetLegacy(userid);
+    const L = getLegacy(userid);
+    L.player = [u1, u2];
+    L.dealer = [d1, d2];
 
-    // 보험 가능 여부 (딜러 업카드가 ♠A)
-    if (d1[0].suit === 'S' && d1[0].rank === 'A') {
+    const out = [
+      { ...toLegacyCard(u1) },
+      { ...toLegacyCard(d1) },
+      { ...toLegacyCard(u2) },
+      { ...toLegacyCard(d2) },
+    ];
+
+    // 보험 표시는 dealer 첫 카드가 A일 때
+    if (rankToNum(d1.rank) === 1) {
+      out[1].insurance = 'insurance';
       sess.insuranceAvailable = true;
     }
 
-    // 초기 블랙잭 판정
-    if (ds.isBlackjack || ps.isBlackjack) {
-      // 둘 다 블랙잭이면 Push
-      if (ds.isBlackjack && ps.isBlackjack) {
-        await addMoney(id, sess.hands[0].bet); // push: 원금 반환
-        sess.status = 'settled';
-        return res.json({
-          ...visibleState(sess, true),
-          result: { outcome: 'push', added: sess.hands[0].bet }
-        });
-      }
-      // 딜러만 블랙잭: 플레이어 패배
-      if (ds.isBlackjack && !ps.isBlackjack) {
-        sess.status = 'settled';
-        return res.json({
-          ...visibleState(sess, true),
-          result: { outcome: 'lose', added: 0 }
-        });
-      }
-      // 플레이어만 블랙잭: +2.4×bet (순이익 1.4배)
-      if (!ds.isBlackjack && ps.isBlackjack) {
-        const add = sess.hands[0].bet * 2.4;
-        await addMoney(id, add);
-        sess.status = 'settled';
-        return res.json({
-          ...visibleState(sess, true),
-          result: { outcome: 'blackjack', added: add }
-        });
-      }
-    }
-
-    // 진행 중 상태 반환(딜러 홀카드 숨김)
-    return res.json(visibleState(sess, false));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-}
-
-router.post(['/game/start','/start','/deal'], handleStart);
-
-/**
- * 보험 선택
- * body: { id, take: true|false }
- */
-router.post(['/game/insurance','/insurance'], async (req, res) => {
-  try {
-    const { id, take } = req.body || {};
-    if (!id) return res.status(400).json({ error: 'missing id' });
-    const sess = getSession(id);
-    if (!sess.insuranceAvailable || sess.status !== 'active') {
-      return res.json({ ok: false, error: 'not_available' });
-    }
-    if (sess.insuranceTaken) return res.json({ ok: false, error: 'already' });
-
-    if (take) {
-      const half = sess.hands[0]?.bet ? sess.hands[0].bet / 2 : 0;
-      if (half > 0) {
-        const ok = await addMoney(id, -half);
-        if (!ok) return res.json({ ok: false, error: 'insufficient_funds' });
-        sess.insuranceTaken = true;
-        sess.insuranceBet = half;
-      }
-    }
-    return res.json({ ok: true });
-  } catch (err) {
-    res.status(500).json({ ok: false, error: err.message });
+    return res.json(out);
+  } catch (e) {
+    console.error('[randomcard] ', e);
+    res.status(500).send('server error');
   }
 });
 
 /**
- * 히트
- * body: { id }
+ * POST /hit
+ * body: { userid }
+ * 응답: [ card ]
  */
-router.post(['/game/hit','/hit'], async (req, res) => {
+router.post('/hit', async (req, res) => {
   try {
-    const { id } = req.body || {};
-    if (!id) return res.status(400).json({ error: 'missing id' });
-    const sess = getSession(id);
-    if (sess.status !== 'active') return res.json({ error: 'not_active' });
+    const { userid } = req.body || {};
+    if (!userid) return res.status(400).send('missing userid');
 
-    const h = sess.hands[sess.activeHand];
-    if (!h || h.finished) return res.json({ error: 'hand_finished' });
+    const sess = getSession(userid);
+    if (sess.status !== 'active') sess.status = 'active';
 
-    h.cards.push(drawCard(sess));
-    const s = handScore(h.cards);
-    h.bust = s.isBust;
-    h.blackjack = s.isBlackjack;
+    const card = drawCard(sess);
+    // 엔진/레거시 상태 갱신
+    const h = sess.hands[0] || { cards: [], bet: 0, finished: false, bust: false, blackjack: false, doubled: false };
+    (sess.hands[0] ? sess.hands[0].cards : h.cards).push(card);
+    if (!sess.hands[0]) sess.hands[0] = h;
 
-    if (h.bust) {
-      h.finished = true;
-      // 다음 핸드로 이동
-      while (sess.activeHand < sess.hands.length && sess.hands[sess.activeHand].finished) {
-        sess.activeHand++;
-      }
-      if (sess.activeHand >= sess.hands.length) {
-        // 전부 끝 → 딜러 플레이 & 정산
-        return await dealerAndSettle(id, sess, res);
-      }
-    }
-    return res.json(visibleState(sess, false));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const L = getLegacy(userid);
+    L.player.push(card);
+
+    return res.json([ toLegacyCard(card) ]);
+  } catch (e) {
+    console.error('[hit] ', e);
+    res.status(500).send('server error');
   }
 });
 
 /**
- * 스테이
- * body: { id }
+ * POST /stand
+ * body: { userid }
+ * 응답: [ dealer_card ] 또는 []  (딜러가 17 이상이면 빈 배열)
  */
-router.post(['/game/stay','/stay'], async (req, res) => {
+router.post('/stand', async (req, res) => {
   try {
-    const { id } = req.body || {};
-    if (!id) return res.status(400).json({ error: 'missing id' });
-    const sess = getSession(id);
-    if (sess.status !== 'active') return res.json({ error: 'not_active' });
+    const { userid } = req.body || {};
+    if (!userid) return res.status(400).send('missing userid');
 
-    const h = sess.hands[sess.activeHand];
-    if (!h || h.finished) return res.json({ error: 'hand_finished' });
+    const sess = getSession(userid);
+    if (sess.status !== 'active' && sess.status !== 'dealer') sess.status = 'dealer';
 
-    h.finished = true;
+    const L = getLegacy(userid);
+    const dealerNow = legacyScore(L.dealer);
 
-    // 다음 핸드 찾기
-    while (sess.activeHand < sess.hands.length && sess.hands[sess.activeHand].finished) {
-      sess.activeHand++;
-    }
-    if (sess.activeHand >= sess.hands.length) {
-      // 전부 끝 → 딜러 플레이 & 정산
-      return await dealerAndSettle(id, sess, res);
-    }
-    return res.json(visibleState(sess, false));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/**
- * 더블다운
- * body: { id }
- * - 해당 핸드 베팅 추가 차감(= 그 핸드 bet)
- * - 카드 1장 받고 자동 스테이
- */
-router.post(['/game/double','/double'], async (req, res) => {
-  try {
-    const { id } = req.body || {};
-    if (!id) return res.status(400).json({ error: 'missing id' });
-    const sess = getSession(id);
-    if (sess.status !== 'active') return res.json({ error: 'not_active' });
-
-    const h = sess.hands[sess.activeHand];
-    if (!h || h.finished) return res.json({ error: 'hand_finished' });
-    if (h.cards.length !== 2) return res.json({ error: 'double_only_two_cards' });
-
-    // 추가 베팅 차감
-    const ok = await addMoney(id, -h.bet);
-    if (!ok) return res.json({ error: 'insufficient_funds' });
-
-    h.bet *= 2;
-    h.doubled = true;
-
-    // 카드 1장 받고 자동 스테이
-    h.cards.push(drawCard(sess));
-    const s = handScore(h.cards);
-    h.bust = s.isBust;
-    h.finished = true;
-
-    while (sess.activeHand < sess.hands.length && sess.hands[sess.activeHand].finished) {
-      sess.activeHand++;
-    }
-    if (sess.activeHand >= sess.hands.length) {
-      return await dealerAndSettle(id, sess, res);
-    }
-    return res.json(visibleState(sess, false));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/**
- * 스플릿
- * body: { id }
- * - 같은 랭크일 때만 가능
- * - 새 핸드 추가 + 추가 베팅 차감(= 기본 bet)
- * - 무한 스플릿 가능
- */
-router.post(['/game/split','/split'], async (req, res) => {
-  try {
-    const { id } = req.body || {};
-    if (!id) return res.status(400).json({ error: 'missing id' });
-    const sess = getSession(id);
-    if (sess.status !== 'active') return res.json({ error: 'not_active' });
-
-    const idx = sess.activeHand;
-    const h = sess.hands[idx];
-    if (!h || h.finished) return res.json({ error: 'hand_finished' });
-    if (!canSplit(h.cards)) return res.json({ error: 'cannot_split' });
-
-    // 추가 베팅 차감
-    const extraBet = sess.baseBet || h.bet;
-    const ok = await addMoney(id, -extraBet);
-    if (!ok) return res.json({ error: 'insufficient_funds' });
-
-    // 분할: 각 핸드는 원래 카드 하나씩 + 새 카드 한 장
-    const c1 = h.cards[0];
-    const c2 = h.cards[1];
-
-    // 현재 핸드는 첫 카드 + 새 카드
-    h.cards = [c1, drawCard(sess)];
-    const s1 = handScore(h.cards);
-    h.bust = s1.isBust;
-    h.blackjack = false; // 스플릿 블랙잭 미인정
-    h.finished = false;
-
-    // 새 핸드 추가: 두 번째 카드 + 새 카드
-    const newHand = {
-      cards: [c2, drawCard(sess)],
-      bet: extraBet,
-      finished: false,
-      bust: false,
-      blackjack: false, // 스플릿 블랙잭 미인정
-      doubled: false
-    };
-    const s2 = handScore(newHand.cards);
-    newHand.bust = s2.isBust;
-
-    // 현재 핸드 뒤에 삽입
-    sess.hands.splice(idx + 1, 0, newHand);
-
-    return res.json(visibleState(sess, false));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-/* ---- 딜러 진행 + 정산 ---- */
-
-async function dealerAndSettle(userid, sess, res) {
-  // 딜러 홀카드 공개 후 규칙대로 진행
-  sess.status = 'dealer';
-
-  // 보험 처리: 딜러 블랙잭 시 보험 2배 지급, 아니면 몰수(이미 차감됨)
-  const dScore = handScore(sess.dealer.cards);
-  if (sess.insuranceTaken && sess.insuranceBet > 0) {
-    if (dScore.isBlackjack) {
-      await addMoney(userid, sess.insuranceBet * 2); // +1배(=보험 2배)
-    }
-  }
-
-  // 딜러 히트 규칙: 16 이하면 히트, 17 이상(소프트 포함) 스탠드
-  while (true) {
-    const s = handScore(sess.dealer.cards);
-    if (s.total <= 16) {
-      sess.dealer.cards.push(drawCard(sess));
-      continue;
-    }
-    // 17 이상이면 정지
-    break;
-  }
-
-  // 정산
-  const dealerFinal = handScore(sess.dealer.cards);
-  let added = 0;
-  for (const h of sess.hands) {
-    const ph = handScore(h.cards);
-    // 버스트 우선 패배
-    if (ph.isBust) continue;
-
-    if (dealerFinal.isBust) {
-      // 딜러 버스트 → 생존 핸드 모두 승
-      added += h.bet * 2;
-      continue;
-    }
-
-    if (ph.total > dealerFinal.total) {
-      added += h.bet * 2;             // 승: +2×bet
-    } else if (ph.total < dealerFinal.total) {
-      // 패: 추가 없음
+    if (dealerNow < 17) {
+      const c = drawCard(sess);
+      L.dealer.push(c);
+      sess.dealer.cards.push(c);
+      return res.json([ toLegacyCard(c) ]);
     } else {
-      added += h.bet;                  // 푸시: +1×bet
+      // 딜러가 이미 17 이상이면 클라이언트가 로컬 합계로 종료 판단
+      return res.json([]);
     }
+  } catch (e) {
+    console.error('[stand] ', e);
+    res.status(500).send('server error');
   }
+});
 
-  if (added > 0) await addMoney(userid, added);
+/**
+ * POST /doubledown
+ * body: { userid }
+ * 응답: [ card ] (한 장만 주고 끝)
+ */
+router.post('/doubledown', async (req, res) => {
+  try {
+    const { userid } = req.body || {};
+    if (!userid) return res.status(400).send('missing userid');
 
-  sess.status = 'settled';
+    const sess = getSession(userid);
+    if (sess.status !== 'active') sess.status = 'active';
 
-  // 남은 카드 적으면 즉시 리셋
-  if (sess.pendingReshoe) {
-    sess.shoe = buildShoe(6);
-    sess.shoeIdx = 0;
-    sess.pendingReshoe = false;
+    const L = getLegacy(userid);
+    L.doubledown = true;
+
+    const card = drawCard(sess);
+    const h = sess.hands[0] || { cards: [], bet: 0, finished: false, bust: false, blackjack: false, doubled: false };
+    (sess.hands[0] ? sess.hands[0].cards : h.cards).push(card);
+    if (!sess.hands[0]) sess.hands[0] = h;
+
+    return res.json([ toLegacyCard(card) ]);
+  } catch (e) {
+    console.error('[doubledown] ', e);
+    res.status(500).send('server error');
   }
+});
 
-  const money = await getMoney(userid);
-  if (money !== null && money <= 0) {
-    // 파산 → 슈 리셋
-    sess.shoe = buildShoe(6);
-    sess.shoeIdx = 0;
-    sess.pendingReshoe = false;
-  }
+/* ===== 결과 정산(프론트 호출 이름 유지) =====
+   - /userwin         : 원금 포함 2배 지급 (베팅은 프론트에서 선차감 가정)
+   - /userdoublewin   : 더블다운 승리 → 4배 지급
+   - /userdoublelose  : 더블다운 패 → 0
+   - /userdraw        : 푸시 → 1배 반환
+   - /userblackjack   : 블랙잭 → 2.4배 지급
+   - /userinsurancelose      : 보험 O & 딜러 BJ → 보험 2배(= half * 2 = bet) 지급
+   - /userinsurancelosenobj  : 보험 O & 딜러 BJ 아님 → 보험액(=half) 차감
+   - /userperfectbet         : 퍼펙트페어 사이드 30배 지급
+*/
 
-  return res.json({
-    ...visibleState(sess, true),
-    result: { outcome: 'settled', added }
-  });
-}
+router.post('/userwin', async (req, res) => {
+  try {
+    const { userid, betsmoney } = req.body || {};
+    const add = Number(betsmoney) * 2;
+    await addMoney(userid, add);
+    res.json({ ok: true, added: add });
+  } catch (e) { res.status(500).json({ ok:false, error: e.message }); }
+});
+router.post('/userdoublewin', async (req, res) => {
+  try {
+    const { userid, betsmoney } = req.body || {};
+    const add = Number(betsmoney) * 4;
+    await addMoney(userid, add);
+    res.json({ ok: true, added: add });
+  } catch (e) { res.status(500).json({ ok:false, error: e.message }); }
+});
+router.post('/userdoublelose', async (_req, res) => {
+  res.json({ ok: true, added: 0 });
+});
+router.post('/userdraw', async (req, res) => {
+  try {
+    const { userid, betsmoney } = req.body || {};
+    const add = Number(betsmoney);
+    await addMoney(userid, add);
+    res.json({ ok: true, added: add });
+  } catch (e) { res.status(500).json({ ok:false, error: e.message }); }
+});
+router.post('/userblackjack', async (req, res) => {
+  try {
+    const { userid, betsmoney } = req.body || {};
+    const add = Number(betsmoney) * 2.4;
+    await addMoney(userid, add);
+    res.json({ ok: true, added: add });
+  } catch (e) { res.status(500).json({ ok:false, error: e.message }); }
+});
+router.post('/userinsurancelose', async (req, res) => {
+  try {
+    // 딜러 BJ → 보험 2배(half * 2 = bet) 지급
+    const { userid, betsmoney } = req.body || {};
+    const add = Number(betsmoney); // 프론트는 betsmoney를 '원베팅'으로 보내고 있음
+    await addMoney(userid, add);
+    res.json({ ok: true, added: add });
+  } catch (e) { res.status(500).json({ ok:false, error: e.message }); }
+});
+router.post('/userinsurancelosenobj', async (req, res) => {
+  try {
+    // 딜러 BJ 아님 → 보험액(=half) 차감
+    const { userid, betsmoney } = req.body || {};
+    const sub = Number(betsmoney);
+    const ok = await addMoney(userid, -sub);
+    res.json({ ok, added: ok ? -sub : 0 });
+  } catch (e) { res.status(500).json({ ok:false, error: e.message }); }
+});
+router.post('/userperfectbet', async (req, res) => {
+  try {
+    const { userid, perfectbetsmoney } = req.body || {};
+    const add = Number(perfectbetsmoney) * 30;
+    await addMoney(userid, add);
+    res.json({ ok: true, added: add });
+  } catch (e) { res.status(500).json({ ok:false, error: e.message }); }
+});
+
 
 export default router;
