@@ -38,6 +38,17 @@ const Game = () => {
 
     const [width, setWidth] = useState(window.innerWidth);
 
+    const cardImages = require.context('../cardimg', false, /\.png$/);
+
+    function resolveCard(urlOrFilename) {
+      const name = String(urlOrFilename || '').split('/').pop(); // 마지막 파일명만
+      try {
+        return cardImages('./' + name);
+      } catch {
+        return nocard;
+      }
+    }
+
     const handleResize = () => {
         setWidth(window.innerWidth);
     };
@@ -843,7 +854,7 @@ const Game = () => {
                                     <div key={index} className={`flip-container ${isFlipped ? 'flip' : ''} ${isDealerslide[index] ? `slide-dealer` : ''}${index}`} >
                                         <div className="flipper">
                                             <div className="back">
-                                                <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
+                                                <img src={resolveCard(url)} alt="Front" className="testcard"/>
                                             </div>
                                             <div className="front">
                                                 <img src={nocard} alt="Back" className="testcard"/>
@@ -856,7 +867,7 @@ const Game = () => {
                                     <div key={index} className={`flip-container ${isDealerslide[index] ? `slide-dealer` : ''}${index}`} >
                                         <div className="flipper">
                                             <div className="front">
-                                                <img src={process.env.PUBLIC_URL + url} alt="Front" className="testcard"/>
+                                                <img src={resolveCard(url)} alt="Front" className="testcard"/>
                                             </div>
                                             <div className="back">
                                                 <img src={nocard} alt="Back" className="testcard"/>
@@ -875,7 +886,7 @@ const Game = () => {
                             const url = usercard_array[index].cardimg;
                             return (
                                 <div key={index} className={`usercard1 ${isUserslide[index] ? `slide-player` : ''}${index}`}>
-                                    <img src={process.env.PUBLIC_URL + url} className="testcard"/>
+                                    <img src={resolveCard(url)} className="testcard"/>
                                 </div>
                             )
                         })

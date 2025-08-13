@@ -273,18 +273,18 @@ function suitWord(letter) {
 }
 function mapToImgPath({ suit, rank }) {
   const s = suitWord(suit);
-  if (rank === 'A') return `src/cardimg/1_ace_of_${s}.png`;
-  if (rank === 'J') return `src/cardimg/10_jack_of_${s}.png`;
-  if (rank === 'Q') return `src/cardimg/10_queen_of_${s}.png`;
-  if (rank === 'K') return `src/cardimg/10_king_of_${s}.png`;
-  if (rank === '10') return `src/cardimg/10_of_${s}.png`;
+  if (rank === 'A') return `1_ace_of_${s}.png`;
+  if (rank === 'J') return `10_jack_of_${s}.png`;
+  if (rank === 'Q') return `10_queen_of_${s}.png`;
+  if (rank === 'K') return `10_king_of_${s}.png`;
+  if (rank === '10') return `10_of_${s}.png`;
   // 2~9
-  return `src/cardimg/${rank}_of_${s}.png`;
+  return `${rank}_of_${s}.png`;
 }
 function toLegacyCard(c) {
   return {
     cardnum: rankToNum(c.rank),
-    cardpattern: c.suit,        // 'S','H','D','C'
+    cardpattern: c.suit,
     cardimg: mapToImgPath(c)
   };
 }
