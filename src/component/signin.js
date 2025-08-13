@@ -20,70 +20,93 @@ const Container = () => {
         setFormClass("right-panel-active");
     };
 
-    const signup = () => {
-        if (nameRef.current.value === "" || nameRef.current.value === undefined) {
-            Swal.fire({
-                icon: "warning",
-                text: "이름을 입력해주세요.",
-            });
-            nameRef.current.focus();
-            return false;
-        }
-        if (idRef.current.value === "" || idRef.current.value === undefined) {
-            Swal.fire({
-                icon: "warning",
-                text: "사용할 아이디를 입력해주세요.",
-            });
-            idRef.current.focus();
-            return false;
-        }
-        if (pwRef.current.value === "" || pwRef.current.value === undefined) {
-            Swal.fire({
-                icon: "warning",
-                text: "사용할 비밀번호를 입력해주세요.",
-            });
-            pwRef.current.focus();
-            return false;
-        }
+    const signup = async () => {
+      if (!nameRef.current?.value) {
+        Swal.fire({ icon: "warning", text: "이름을 입력해주세요." });
+        nameRef.current?.focus();
+        return;
+      }
+      if (!idRef.current?.value) {
+        Swal.fire({ icon: "warning", text: "사용할 아이디를 입력해주세요." });
+        idRef.current?.focus();
+        return;
+      }
+      if (!pwRef.current?.value) {
+        Swal.fire({ icon: "warning", text: "사용할 비밀번호를 입력해주세요." });
+        pwRef.current?.focus();
+        return;
+      }
 
-
-        Axios.post("https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/signup", {
+      try {
+        const res = await Axios.post(
+          "https://port-0-black-jack-react-me8r4bj02dd23ef3.sel5.cloudtype.app/signup",
+          {
             name: nameRef.current.value,
             id: idRef.current.value,
             pw: pwRef.current.value,
-        }).then((res) => {
-            if (res.data.affectedRows === 1){
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: 'center-center',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    width: 500,
-                    didOpen: (toast) => {
-                      toast.addEventListener('mouseenter', Swal.stopTimer)
-                      toast.addEventListener('mouseleave', Swal.resumeTimer)
-                    }
-                })
+          },
+          { validateStatus: () => true }
+        );
 
-                Toast.fire({
-                    icon: 'success',
-                    title: '아이디가 정상적으로 생성되었습니다. <br/> 생성된 아이디로 로그인해주세요.',
-                }).then(function(){
-                    urlmove('/Black-jack-React');
-                });
-                
-            }else {
-                Swal.fire({
-                    icon: "warning",
-                    title: "아이디 중복",
-                    text: "이미 존재하는 아이디입니다.",
-                });
-            }
-        }).catch((e) => {
-            console.error(e);
+        // 상태코드 기준 분기
+        if (res.status === 201 && res.data?.ok) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "center-center",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            width: 500,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          await Toast.fire({
+            icon: "success",
+            title:
+              "아이디가 정상적으로 생성되었습니다. <br/> 생성된 아이디로 로그인해주세요.",
+          });
+          urlmove("/Black-jack-React");
+          return;
+        }
+
+        // 서버가 중복으로 보낸 표준 응답 처리
+        if (res.status === 409) {
+          Swal.fire({
+            icon: "warning",
+            title: "아이디 중복",
+            text: res.data?.message || "이미 존재하는 아이디입니다.",
+          });
+          return;
+        }
+
+        // 잘못된 입력
+        if (res.status === 400) {
+          Swal.fire({
+            icon: "warning",
+            title: "입력 오류",
+            text: res.data?.message || "필수 값이 누락되었습니다.",
+          });
+          return;
+        }
+
+        // 그 외 서버 오류
+        Swal.fire({
+          icon: "error",
+          title: "회원가입 실패",
+          text: res.data?.message || "서버 오류가 발생했습니다.",
         });
-    }
+      } catch (e) {
+        console.error(e);
+        Swal.fire({
+          icon: "error",
+          title: "네트워크 오류",
+          text: "잠시 후 다시 시도해주세요.",
+        });
+      }
+    };
 
 
     const signin = () => {
