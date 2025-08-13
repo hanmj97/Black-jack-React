@@ -562,8 +562,8 @@
     width: 7%;
     height: 23%;
     z-index: 100;
-    left: 68%;
-    top: 35%;
+    left: 60%;
+    top: 38%;
     object-fit: contain;
     /* display: none; */
   }
@@ -616,8 +616,8 @@
     position: absolute;
     width: 7%;
     z-index: 100;
-    left: 68%;
-    top: 33%;
+    left: 60%;
+    top: 38%;
     /* display: none; */
   }
 
@@ -653,96 +653,94 @@
 
   .cardstack {
     position: absolute;
-    width: 15%;
+    width: 10%;
     left: 60%;
     top: 35%;
     z-index: 100;
   }
 
   .cardstack_img {
-    width: 100%;
-    height: 100%;
     max-width : 190px;
     object-fit: contain;
   }
 
   .slide-player0 {
-    transform: translateX(-650%) translateY(120%);
+    transform: translateX(-500%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-player1 {
-    transform: translateX(-620%) translateY(120%);
+    transform: translateX(-470%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-player2 {
-    transform: translateX(-590%) translateY(120%);
+    transform: translateX(-440%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-player3 {
-    transform: translateX(-560%) translateY(120%);
+    transform: translateX(-410%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-player4 {
-    transform: translateX(-530%) translateY(120%);
+    transform: translateX(-380%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-player5 {
-    transform: translateX(-500%) translateY(120%);
+    transform: translateX(-350%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-player6 {
-    transform: translateX(-470%) translateY(120%);
+    transform: translateX(-320%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-player7 {
-    transform: translateX(-440%) translateY(120%);
+    transform: translateX(-290%) translateY(100%);
     transition: transform 1.0s;
   }
 
   .slide-dealer0 {
-    transform: translateX(-650%) translateY(-100%);
+    transform: translateX(-500%) translateY(-110%);
     transition: transform 1.0s;
   }
 
   .slide-dealer1 {
-    transform: translateX(-620%) translateY(-100%);
+    transform: translateX(-470%) translateY(-110%);
     transition: transform 1.0s;
   }
 
   .slide-dealer2 {
-    transform: translateX(-590%) translateY(-100%);
+    transform: translateX(-440%) translateY(-110%);
     transition: transform 1.0s;
   }
 
   .slide-dealer3 {
-    transform: translateX(-560%) translateY(-100%);
+    transform: translateX(-410%) translateY(-110%);
     transition: transform 1.0s;
   }
 
   .slide-dealer4 {
-    transform: translateX(-530%) translateY(-100%);
+    transform: translateX(-380%) translateY(-110%);
     transition: transform 1.0s;
   }
 
   .slide-dealer5 {
-    transform: translateX(-500%) translateY(-100%);
+    transform: translateX(-350%) translateY(-110%);
     transition: transform 1.0s;
   }
 
   .slide-dealer6 {
-    transform: translateX(-470%) translateY(-100%);
+    transform: translateX(-330%) translateY(-110%);
     transition: transform 1.0s;
   }
 
   .slide-dealer7 {
-    transform: translateX(-440%) translateY(-100%);
+    transform: translateX(-300%) translateY(-110%);
     transition: transform 1.0s;
   }
 
@@ -2548,7 +2546,7 @@
 
   .usercard1 {
     position: absolute;
-    width: 20%;
+    width: 25%;
     z-index: 100;
     left: 70%;
     top: 15%;
