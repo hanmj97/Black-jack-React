@@ -1,6 +1,9 @@
 import Logoimg from "../headerimg/Blackjack-hands-cards.png";
 import { Link } from 'react-router-dom';
 import Swal from "sweetalert2";
+import { useNavigate } from 'react-router-dom';
+
+const navigate = useNavigate();
 
 export default function Header(props) {
     return (
@@ -43,12 +46,13 @@ export default function Header(props) {
         <div className="content02">
             <section className="section02" id="Game">
                 <div className="gamebutton-area">
-                    <button className="gamebtn">
-                        {   
-                            sessionStorage.length === 2 ? 
-                            <Link to="/Signin"><span style={{color: "white"}}>Blackjack - Game Start !!</span></Link> : 
-                            <Link to="/Betting"><span style={{color: "white"}}>Blackjack - Game Start !!</span></Link>
-                        }
+                    <button
+                      className="gamebtn"
+                      onClick={() => {
+                        sessionStorage.length === 2 ? navigate('/Signin') : navigate('/Betting');
+                      }}
+                    >
+                      <span style={{color: "white"}}>Blackjack - Game Start !!</span>
                     </button>
                 </div>
             </section>
