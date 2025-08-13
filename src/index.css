@@ -243,14 +243,14 @@
     width: 10%;
     z-index: 100;
     left: 58%;
-    top: 32%;
+    top: 33%;
   }
 
   .usermoney {
     position: absolute;
     width: 25%;
     z-index: 100;
-    left: 75%;
+    left: 76%;
     top: 85%;
     color: #ffffff;
     font-size: 30px;
@@ -284,7 +284,7 @@
     position: absolute;
     width: 25%;
     z-index: 100;
-    left: 75%;
+    left: 76%;
     top: 80%;
     color: #ffffff;
     font-size: 30px;
@@ -296,17 +296,17 @@
     width: 40%;
     height: 20%;
     z-index: 100;
-    left: 25%;
-    top: 25%;
+    left: 23%;
+    top: 27%;
   }
 
   .perfectbetmoney {
     position: absolute;
     width: 35%;
-    height: 20%;
+    height: 25%;
     z-index: 100;
     left: 40%;
-    top: 44%;
+    top: 45%;
     font-size: 30px;
     text-align:right;
     font-weight: bold;
@@ -315,10 +315,10 @@
   .bettingmoney {
     position: absolute;
     width: 35%;
-    height: 20%;
+    height: 25%;
     z-index: 100;
     left: 40%;
-    top: 84%;
+    top: 88%;
     font-size: 30px;
     text-align:right;
     font-weight: bold;
@@ -329,8 +329,8 @@
     width: 45%;
     height: 20%;
     z-index: 100;
-    left: 0%;
-    top: 40%;
+    left: 11%;
+    top: 42%;
     font-size: calc(1rem + 0.7vw);
     color: black;
     font-weight: bold;
@@ -341,8 +341,8 @@
     width: 20%;
     height: 20%;
     z-index: 100;
-    left: 21%;
-    top: 80%;
+    left: 29%;
+    top: 83%;
     font-size: calc(1rem + 0.8vw);
     color: black;
     font-weight: bold;
@@ -358,7 +358,7 @@
     height: 20%;
     z-index: 100;
     left: 78%;
-    top: 80%;
+    top: 82%;
     font-size: calc(1rem + 1vw);
     color: black;
     font-weight: bold;
@@ -460,16 +460,16 @@
     position: absolute;
     width: 15%;
     z-index: 100;
-    left: 4%;
-    top: 40%;
+    left: 8%;
+    top: 45%;
   }
 
   .betbtn2 {
     position: absolute;
     width: 15%;
     z-index: 100;
-    left: 4%;
-    top: 65%;
+    left: 8%;
+    top: 75%;
   }
 
   .chip1 {
@@ -482,42 +482,42 @@
 
   .chip5 {
     position: absolute;
-    width: 8%;
+    width: 7%;
     z-index: 100;
-    left: 25%;
-    top: 45%;
+    left: 27%;
+    top: 50%;
   }
 
   .chip10 {
     position: absolute;
-    width: 8%;
+    width: 7%;
     z-index: 100;
-    left: 40%;
-    top: 45%;
+    left: 38%;
+    top: 50%;
   }
 
   .chip25 {
     position: absolute;
-    width: 8%;
+    width: 7%;
     z-index: 100;
-    left: 55%;
-    top: 45%;
+    left: 49%;
+    top: 50%;
   }
 
   .chip100 {
     position: absolute;
-    width: 8%;
+    width: 7%;
     z-index: 100;
-    left: 70%;
-    top: 45%;
+    left: 60%;
+    top: 50%;
   }
 
   .chip1000 {
     position: absolute;
-    width: 8%;
+    width: 7%;
     z-index: 100;
-    left: 85%;
-    top: 45%;
+    left: 71%;
+    top: 50%;
   }
 
 
@@ -562,8 +562,8 @@
     width: 7%;
     height: 23%;
     z-index: 100;
-    left: 66%;
-    top: 36%;
+    left: 68%;
+    top: 35%;
     object-fit: contain;
     /* display: none; */
   }
@@ -586,8 +586,8 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 110%;
+    height: 110%;
     backface-visibility: hidden;
     z-index: 100;
   }
@@ -616,8 +616,8 @@
     position: absolute;
     width: 7%;
     z-index: 100;
-    left: 66%;
-    top: 36%;
+    left: 68%;
+    top: 33%;
     /* display: none; */
   }
 
@@ -654,7 +654,7 @@
   .cardstack {
     position: absolute;
     width: 15%;
-    left: 65%;
+    left: 60%;
     top: 35%;
     z-index: 100;
   }
@@ -766,8 +766,8 @@
     width: 15%;
     height: 70%;
     z-index: 100;
-    left: 80%;
-    top: 10%;
+    left: 75%;
+    top: 0%;
   }
 
 
@@ -777,7 +777,7 @@
     font-size: 22px;
     padding: 7% 20%;
     color: white;
-    margin: 35% 10% 10%;
+    margin: 25% 10% 10%;
     border-radius: 6px;
     text-align: center;
     transition: top .01s linear;
@@ -841,7 +841,7 @@
   }
 
   .gbtn.finbats {
-    margin: 3% 10% 10%;
+    margin: 1% 10% 10%;
   }
 
   .gbtn.ranks {
@@ -922,7 +922,7 @@
           0 8px 0 0 #1e1e1e,
           0 8px 0 1px rgba(0,0,0,0.4),
           0 8px 8px 1px rgba(0,0,0,0.5);
-    font-size: calc(1.0rem + 0.2vw);
+    font-size: calc(1.0rem);
   }
   .gbtn.finbats:active {
     box-shadow: 0 0 0 1px #000000 inset,
@@ -1280,7 +1280,6 @@
     width: fit-content;
     height: 40%;
     display: inline-block;
-
   }
 
 
@@ -2285,7 +2284,7 @@
     height: 20%;
     z-index: 100;
     left: 25%;
-    top: 5%;
+    top: 10%;
   }
 
   .perfectbetmoney {
@@ -2306,7 +2305,7 @@
     height: 18%;
     z-index: 100;
     left: 44%;
-    top: 80%;
+    top: 83%;
     font-size: 22px;
     text-align:right;
     font-weight: bold;
@@ -2834,7 +2833,7 @@
           0 8px 0 0 #1e1e1e,
           0 8px 0 1px rgba(0,0,0,0.4),
           0 8px 8px 1px rgba(0,0,0,0.5);
-    font-size: calc(1.0rem + 0.2vw);
+    font-size: calc(1.0rem + 0.1vw);
   }
   .gbtn.finbats:active {
     box-shadow: 0 0 0 1px #000000 inset,
