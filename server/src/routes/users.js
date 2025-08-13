@@ -268,15 +268,18 @@ function rankToNum(rank) {
   if (['K','Q','J','10'].includes(rank)) return 10;
   return parseInt(rank, 10);
 }
+function suitWord(letter) {
+  return { S: 'spades', H: 'hearts', D: 'diamonds', C: 'clubs' }[letter] || 'spades';
+}
 function mapToImgPath({ suit, rank }) {
   const s = suitWord(suit);
-  if (rank === 'A') return `/cardimg/1_ace_of_${s}.png`;
-  if (rank === 'J') return `/cardimg/10_jack_of_${s}.png`;
-  if (rank === 'Q') return `/cardimg/10_queen_of_${s}.png`;
-  if (rank === 'K') return `/cardimg/10_king_of_${s}.png`;
-  if (rank === '10') return `/cardimg/10_of_${s}.png`;
+  if (rank === 'A') return `src/cardimg/1_ace_of_${s}.png`;
+  if (rank === 'J') return `src/cardimg/10_jack_of_${s}.png`;
+  if (rank === 'Q') return `src/cardimg/10_queen_of_${s}.png`;
+  if (rank === 'K') return `src/cardimg/10_king_of_${s}.png`;
+  if (rank === '10') return `src/cardimg/10_of_${s}.png`;
   // 2~9
-  return `/cardimg/${rank}_of_${s}.png`;
+  return `src/cardimg/${rank}_of_${s}.png`;
 }
 function toLegacyCard(c) {
   return {
